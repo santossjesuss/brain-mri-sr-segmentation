@@ -13,7 +13,8 @@ class BaseTrainer(ABC):
             optimizer=None, 
             scheduler=None, 
             saving_name=None,
-            logger=None
+            logger=None,
+            img_logger=None
         ):
         super().__init__()
         self.device = device
@@ -26,6 +27,7 @@ class BaseTrainer(ABC):
         self.scheduler = scheduler
         self.saving_name = saving_name
         self.logger = logger
+        self.img_logger = img_logger
 
     def train(self, epochs):
         best_validation_score = float('-inf')

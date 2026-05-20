@@ -13,11 +13,14 @@ class MultiStageTrainer(BaseTrainer):
 
         progress_bar_description = f"Epoch {epoch+1}/{total_epochs}"
         progress_bar = tqdm(self.train_loader, desc=progress_bar_description)
-        for batch in progress_bar:
+        for batch_idx, batch in enumerate(progress_bar):
             lr_image, hr_image, hr_masks = self._prepare_batch(batch)
 
             self.optimizer.zero_grad(set_to_none=True)
             pred_hr_masks_logits, pred_hr_image = self.model(lr_image)
+            
+            self.img_logger.log_batch_images(pred_hr_image, epoch, batch_idx)
+            
             if self.use_combined_loss:
                 loss = self.criterion(pred_hr_image, hr_image, pred_hr_masks_logits, hr_masks)
             else:

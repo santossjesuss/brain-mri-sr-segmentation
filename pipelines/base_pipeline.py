@@ -10,6 +10,7 @@ from losses.sr_seg_combined_loss import SRSegCombinedLoss
 from metrics.superres_metrics import SuperResolutionMetrics
 from metrics.segmentation_metrics import SegmentationMetrics
 from loggers.tensorboard_logger import TensorBoardLogger
+from loggers.image_logger import ImageLogger
 from utils.gpu import enable_cuda
 
 class BasePipeline(ABC):
@@ -99,3 +100,9 @@ class BasePipeline(ABC):
     def _get_logger(self):
         log_path = os.path.join("logs", self.experiment_name)
         return TensorBoardLogger(log_dir=log_path)
+    
+    def _get_img_logger(self):
+        return ImageLogger(
+            base_img_log_dir=self.config.base_img_log_dir,
+            model_name=self.experiment_name
+        )

@@ -34,3 +34,6 @@ class BaseConfig:
     trainable_sr_frozen_seg: str = 'trainable_sr_frozen_seg'
     joint_sr_seg_e2e: str = 'joint_sr_seg_e2e'
     joint_sr_seg_combined: str = 'joint_sr_seg_combined'
+
+    # Logging config
+    base_img_log_dir: str = 'logs/images'
