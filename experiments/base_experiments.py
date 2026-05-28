@@ -51,6 +51,7 @@ class BaseExperiments(ABC):
             training_dataset=self.train_dataset,
             validation_dataset=self.validation_dataset,
             test_dataset=self.test_dataset,
+            dataset_name=self.config.dataset_name,
             data_resolution=data_resolution
         )
 

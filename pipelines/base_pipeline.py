@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 import os
+import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from configs.mslesseg_config import MSLesSegConfig
+from configs.fcdlesseg_config import FCDLesSegConfig 
+from torch.utils.data import DataLoader, WeightedRandomSampler
 import segmentation_models_pytorch as smp
 from models.rcan.rcan import RCAN
 from losses.dice_ce_combined_loss import DiceCECombinedLoss
@@ -14,12 +17,13 @@ from loggers.image_logger import ImageLogger
 from utils.gpu import enable_cuda
 
 class BasePipeline(ABC):
-    def __init__(self, config, experiment_name, data_resolution=None):
+    def __init__(self, config, experiment_name, dataset_name=None, data_resolution=None):
         self.config = config
         self.device = enable_cuda()
         self.experiment_name = experiment_name
-        self.saving_path = os.path.join(self.config.folder_name, f'{experiment_name}.pth')
+        self.dataset_name = dataset_name
         self.data_resolution = data_resolution
+        self.saving_path = os.path.join(self.config.folder_name, f'{experiment_name}.pth')
 
     @abstractmethod
     def run(self, train_dataset, validation_dataset):
@@ -36,7 +40,7 @@ class BasePipeline(ABC):
             shuffle=self.config.shuffle_data,
             num_workers=self.config.num_workers
         )
-    
+
     def _init_rcan(self):
         return RCAN(
             in_channels=self.config.in_channels,
@@ -59,9 +63,25 @@ class BasePipeline(ABC):
         return nn.L1Loss()
 
     def _get_seg_loss(self):
+        if self.dataset_name == MSLesSegConfig.dataset_name:
+            return self._get_dice_ce_combined_loss()
+        elif self.dataset_name == FCDLesSegConfig.dataset_name:
+            return self._get_focal_tversky_loss()
+        else:
+            raise ValueError(f"Unsupported dataset: {self.dataset_name}")
+    
+    def _get_dice_ce_combined_loss(self):
         return DiceCECombinedLoss(
             dice_weight=self.config.dice_weight, 
             cross_entropy_weight=self.config.cross_entropy_weight
+        )
+        
+    def _get_focal_tversky_loss(self):
+        return smp.losses.TverskyLoss(
+            mode='multiclass', #might change to 'binary'
+            alpha=self.config.tversky_alpha,
+            beta=self.config.tversky_beta,
+            smooth=self.config.tversky_smooth
         )
 
     def _get_combined_sr_seg_loss(self):
