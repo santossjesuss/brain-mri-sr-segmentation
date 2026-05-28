@@ -9,7 +9,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         super().__init__(*args, **kwargs)
 
     def run(self, train_dataset, validation_dataset):
-        train_loader = self._get_dataloader(train_dataset)
+        train_loader = self._get_dataloader(train_dataset, use_lesion_sampler=self.config.use_lesion_sampler)
         validation_loader = self._get_dataloader(validation_dataset)
 
         sr_model = self._init_rcan()

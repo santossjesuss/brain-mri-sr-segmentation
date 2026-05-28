@@ -16,6 +16,7 @@ class MSLesSegConfig(BaseConfig):
     # Dataset config
     train_perc_size: float = 0.8
     view: str = 'axial'
+    use_lesion_sampler: bool = False
 
     # Saving config
     dataset_name = "mslesseg"

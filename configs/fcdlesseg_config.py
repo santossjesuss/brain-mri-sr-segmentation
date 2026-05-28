@@ -16,6 +16,9 @@ class FCDLesSegConfig(BaseConfig):
     # Dataset config
     train_perc_size: float = 0.8
     view: str = 'axial'
+    use_lesion_sampler: bool = True
+    positives_per_batch: int = 1
+    drop_last: bool = False
 
     # Saving config
     dataset_name = "fcdlesseg"

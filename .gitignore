@@ -4,3 +4,4 @@ venv
 data
 logs
 debug
+trained_models
