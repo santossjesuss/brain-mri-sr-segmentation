@@ -1,14 +1,20 @@
 from abc import ABC, abstractmethod
 import os
+import random
+import multiprocessing
 from torch.utils.data import Dataset
 from torchvision.io import read_image, ImageReadMode
 from transforms.base_transforms import BaseTransforms
 
 class BaseSegmentationDataset(Dataset, ABC):
-    def __init__(self, is_training, scale_factor, dataset_path=None, view='axial'):
+    def __init__(self, is_training, scale_factor, dataset_path=None, view='axial', enforce_min_lesion_per_batch=False, batch_size=None):
         super().__init__()
         self.view = view
         self.is_training = is_training
+        self.batch_size = batch_size
+        self.batch_counter = multiprocessing.Value('i', 0)
+        self.counter_lock = multiprocessing.Lock()
+        self.enforce_min_lesion_per_batch = enforce_min_lesion_per_batch
 
         self.dataset_path = self._resolve_dataset_path(dataset_path=dataset_path)
         self.images_path = self._get_data_path(is_image=True)
@@ -16,15 +22,22 @@ class BaseSegmentationDataset(Dataset, ABC):
         
         self.images_names = self._get_names(data_path=self.images_path)
         self.masks_names = self._get_names(data_path=self.masks_path)
+        self.images_with_lesion, self.masks_with_lesion = self._get_with_lesion()
         
         self.transforms = BaseTransforms(scale_factor=scale_factor)
+        
 
     def __len__(self):
         return len(self.images_names)
 
     def __getitem__(self, idx):
-        image_path = os.path.join(self.images_path, self.images_names[idx])
-        mask_path = os.path.join(self.masks_path, self.masks_names[idx])
+        if self.enforce_min_lesion_per_batch and self.batch_counter % self.batch_size == 0:
+            idx = random.randint(0, len(self.images_with_lesion) - 1)
+            image_path = os.path.join(self.images_path, self.images_with_lesion[idx])
+            mask_path = os.path.join(self.masks_path, self.masks_with_lesion[idx])
+        else:
+            image_path = os.path.join(self.images_path, self.images_names[idx])
+            mask_path = os.path.join(self.masks_path, self.masks_names[idx])
         
         hr_image = read_image(image_path, mode=ImageReadMode.GRAY)
         lr_image = self.transforms.downsample_image(hr_image)
@@ -39,6 +52,8 @@ class BaseSegmentationDataset(Dataset, ABC):
         hr_mask = self.transforms.normalize_binary_mask(mask=hr_mask)
         lr_mask = self.transforms.normalize_binary_mask(mask=lr_mask)
         
+        self._increment_counter()
+
         return hr_image, hr_mask, lr_image, lr_mask
 
     @abstractmethod
@@ -63,3 +78,20 @@ class BaseSegmentationDataset(Dataset, ABC):
     
     def _get_names(self, data_path):
         return sorted(os.listdir(data_path))
+        
+    def _get_with_lesion(self):
+        images_with_lesion = []
+        masks_with_lesion = []
+
+        for image_name, mask_name in zip(self.images_names, self.masks_names):
+            mask_path = os.path.join(self.masks_path, mask_name)
+            mask = read_image(mask_path, mode=ImageReadMode.GRAY)
+            if mask.max() > 0:
+                images_with_lesion.append(image_name)
+                masks_with_lesion.append(mask_name)
+        
+        return images_with_lesion, masks_with_lesion
+    
+    def _increment_counter(self):
+        with self.counter_lock:
+            self.batch_counter.value += 1
