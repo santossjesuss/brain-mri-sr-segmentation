@@ -1,4 +1,3 @@
-
 def execute_training_batch(experiments):
     sr_experiment = experiments.get_super_resolution()
     sr_experiment.run()
@@ -22,14 +21,8 @@ def execute_training_batch(experiments):
     joint_sr_seg_combined_experiment.run()
 
 def execute_testing_batch(experiments):
-    sr_experiment = experiments.get_super_resolution()
-    sr_experiment.test()
-
     lr_seg_experiment = experiments.get_lr_segmentation()
     lr_seg_experiment.test()
-
-    hr_seg_experiment = experiments.get_hr_segmentation()
-    hr_seg_experiment.test()
 
     frozen_sr_frozen_seg_experiment = experiments.get_frozen_sr_frozen_seg()
     frozen_sr_frozen_seg_experiment.test()

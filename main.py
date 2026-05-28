@@ -1,6 +1,7 @@
-from utils.execution_batches import execute_training_batch
 from experiments.mslesseg_experiments import MSLesSegExperiments
 from experiments.fcdlesseg_experiments import FCDLesSegExperiments
+from utils.execution_batches import execute_training_batch, execute_testing_batch
+from utils.test_to_excel import test_to_excel, default_dataset_experiments, default_model_experiments
 
 def main():
     # -|Quick checkings|-
@@ -18,11 +19,16 @@ def main():
     # experiment.run()
     # experiment.test()
 
-    # -|Complete experiments training|-
     ms_experiments = MSLesSegExperiments()
-    fcd_experiments = FCDLesSegExperiments()
-    execute_training_batch(experiments=ms_experiments)
-    execute_training_batch(experiments=fcd_experiments)
+    # fcd_experiments = FCDLesSegExperiments()
+    
+    # -|Complete experiments training|-
+    # execute_training_batch(experiments=ms_experiments)
+    # execute_training_batch(experiments=fcd_experiments)
+
+    # -|Complete experiments testing|-
+    dataset_experiments = default_dataset_experiments()
+    test_to_excel(dataset_experiments)
 
 if __name__ == "__main__":
     main()

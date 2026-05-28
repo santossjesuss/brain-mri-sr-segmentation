@@ -20,7 +20,6 @@ class BaseSegmentationDataset(Dataset, ABC):
         
         self.transforms = BaseTransforms(scale_factor=scale_factor)
         
-
     def __len__(self):
         return len(self.image_names)
 
