@@ -15,6 +15,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         seg_model = self._init_unet()
         criterion = self._get_combined_sr_seg_loss()
         validation_metrics = self._get_seg_validation_metrics()
+        img_logger = self._get_img_logger()
 
         joint_sr_seg_combined_model = MultiStageModel(
             model_stage_1=sr_model,
@@ -35,6 +36,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
+            img_logger=img_logger,
             use_combined_loss=True,
             saving_name=self.saving_path
         )

@@ -11,6 +11,7 @@ class ImageLogger():
         os.makedirs(directory, exist_ok=True)
         
         for idx, img in enumerate(batch_images):
+            img = img.detach().cpu().numpy()
             contains_nan = np.isnan(img).any()
             if contains_nan:
                 print(f"Warning: Image at batch {batch_idx}, index {idx} contains NaN values.")
@@ -19,4 +20,4 @@ class ImageLogger():
                 filename = f'batch_{batch_idx}_{idx}.png'
             
             filepath = os.path.join(directory, filename)
-            np.save(filepath, img.cpu().numpy())
+            np.save(filepath, img)

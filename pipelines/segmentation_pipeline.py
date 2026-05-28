@@ -27,8 +27,8 @@ class SegmentationPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
-            saving_name=self.saving_path,
-            logger=logger
+            logger=logger,
+            saving_name=self.saving_path
         )
         
         return trainer.train(epochs=self.config.epochs)
