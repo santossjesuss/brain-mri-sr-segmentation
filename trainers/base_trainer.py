@@ -11,7 +11,8 @@ class BaseTrainer(ABC):
             criterion=None, 
             validation_metrics=None, 
             optimizer=None, 
-            scheduler=None, 
+            scheduler=None,
+            gradient_clipper=None,
             saving_name=None,
             logger=None,
             img_logger=None
@@ -25,6 +26,7 @@ class BaseTrainer(ABC):
         self.validation_metrics = validation_metrics.to(device)
         self.optimizer = optimizer
         self.scheduler = scheduler
+        self.gradient_clipper = gradient_clipper
         self.saving_name = saving_name
         self.logger = logger
         self.img_logger = img_logger

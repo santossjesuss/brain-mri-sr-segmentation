@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import os
 import torch.nn as nn
+from torch.nn.utils import clip_grad_norm_
 import torch.optim as optim
 from configs.mslesseg_config import MSLesSegConfig
 from configs.fcdlesseg_config import FCDLesSegConfig 
@@ -126,9 +127,12 @@ class BasePipeline(ABC):
         return optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,
             mode='max',
-            factor=0.5,
-            patience=5
+            factor=self.config.lr_scheduler_factor,
+            patience=self.config.lr_scheduler_patience
         )
+    
+    def _get_gradient_clipper(self, model):
+        return lambda: clip_grad_norm_(model.parameters(), max_norm=self.config.max_grad_norm)
     
     def _get_logger(self):
         log_path = os.path.join("logs", self.experiment_name)

@@ -27,6 +27,8 @@ class MultiStageTrainer(BaseTrainer):
                 loss = self.criterion(pred_hr_masks_logits, hr_masks)
             
             loss.backward()
+            if self.gradient_clipper:
+                self.gradient_clipper()
             self.optimizer.step()
 
             epoch_loss += loss.item()

@@ -26,6 +26,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
 
         optimizer = self._get_optimizer(joint_sr_seg_combined_model.parameters())
         scheduler = self._get_scheduler(optimizer)
+        gradient_clipper = self._get_gradient_clipper(joint_sr_seg_combined_model)
 
         trainer = MultiStageTrainer(
             model=joint_sr_seg_combined_model,
@@ -36,6 +37,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
+            gradient_clipper=gradient_clipper,
             img_logger=img_logger,
             use_combined_loss=True,
             saving_name=self.saving_path
