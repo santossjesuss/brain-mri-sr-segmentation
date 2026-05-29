@@ -14,6 +14,7 @@ class BaseConfig:
     # num_rg: int = 5
     # num_rcab: int = 8
     # sr_inner_channels: int = 64
+    # --|Server config|--
  
     # --|Local config|--
     # Training config
@@ -27,7 +28,8 @@ class BaseConfig:
     num_rg: int = 1
     num_rcab: int = 1
     sr_inner_channels: int = 2
-
+    # --|Local config|--
+    
     # Segmentation config
     seg_model_name: str = 'resnet34'
     seg_encoder_weights: str = None
@@ -40,6 +42,11 @@ class BaseConfig:
     tversky_alpha: float = 0.1
     tversky_beta: float = 0.9
     tversky_smooth: float = 1e-6
+
+    # Meta-parameters config
+    lr_scheduler_factor: float = 0.5
+    lr_scheduler_patience: int = 5
+    max_grad_norm: float = 1.0
 
     # Saving config
     folder_name: str = 'trained_models'
