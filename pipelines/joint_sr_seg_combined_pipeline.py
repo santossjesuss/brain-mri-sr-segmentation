@@ -32,6 +32,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         gradient_clipper = self._get_gradient_clipper(joint_sr_seg_combined_model)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=joint_sr_seg_combined_model,
             device=self.device,
             train_loader=train_loader,
@@ -65,6 +66,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         load_model_for_inference(model=joint_sr_seg_combined_model, saving_name=self.saving_path)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=joint_sr_seg_combined_model,
             device=self.device,
             validation_metrics=validation_metrics

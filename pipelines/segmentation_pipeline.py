@@ -20,6 +20,7 @@ class SegmentationPipeline(BasePipeline):
         logger = self._get_logger()
 
         trainer = SegmentationTrainer(
+            config=self.config,
             model=model,
             device=self.device,
             train_loader=train_loader,
@@ -44,6 +45,7 @@ class SegmentationPipeline(BasePipeline):
         load_model_for_inference(model, self.saving_path)
 
         trainer = SegmentationTrainer(
+            config=self.config,
             model=model,
             device=self.device,
             validation_metrics=validation_metrics,

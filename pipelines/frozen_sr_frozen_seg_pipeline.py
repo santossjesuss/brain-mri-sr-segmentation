@@ -35,6 +35,7 @@ class FrozenSRFrozenSegPipeline(BasePipeline):
         )
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=sr_seg_model,
             device=self.device,
             validation_metrics=validation_metrics

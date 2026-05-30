@@ -31,6 +31,7 @@ class JointSRSegE2EPipeline(BasePipeline):
         scheduler = self._get_scheduler(optimizer)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=joint_sr_seg_e2e_model,
             device=self.device,
             train_loader=train_loader,
@@ -62,6 +63,7 @@ class JointSRSegE2EPipeline(BasePipeline):
         load_model_for_inference(model=joint_sr_seg_e2e_model, saving_name=self.saving_path)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=joint_sr_seg_e2e_model,
             device=self.device,
             validation_metrics=validation_metrics

@@ -14,8 +14,8 @@ def main():
     # execute_training_batch(experiments=fcd_experiments)
 
     # -|Complete experiments testing|-
-    # dataset_experiments = default_dataset_experiments()
-    # test_to_excel(dataset_experiments)
+    dataset_experiments = default_dataset_experiments()
+    test_to_excel(dataset_experiments)
 
     # -|Visualization|-
     # experiment = ms_experiments.get_super_resolution()

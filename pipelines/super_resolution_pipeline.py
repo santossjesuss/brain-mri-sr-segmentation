@@ -20,6 +20,7 @@ class SuperResolutionPipeline(BasePipeline):
         logger = self._get_logger()
 
         trainer = SuperResolutionTrainer(
+            config=self.config,
             model=model,
             device=self.device,
             train_loader=train_loader,
@@ -43,6 +44,7 @@ class SuperResolutionPipeline(BasePipeline):
         load_model_for_inference(model, self.saving_path)
 
         trainer = SuperResolutionTrainer(
+            config=self.config,
             model=model,
             device=self.device,
             validation_metrics=validation_metrics

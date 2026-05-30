@@ -34,6 +34,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         scheduler = self._get_scheduler(optimizer)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=trainable_sr_frozen_seg_model,
             device=self.device,
             train_loader=train_loader,
@@ -65,6 +66,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         load_model_for_inference(model=trainable_sr_frozen_seg_model, saving_name=self.saving_path)
 
         trainer = MultiStageTrainer(
+            config=self.config,
             model=trainable_sr_frozen_seg_model,
             device=self.device,
             validation_metrics=validation_metrics

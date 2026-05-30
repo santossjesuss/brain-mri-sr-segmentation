@@ -4,6 +4,7 @@ from utils.model_persistence import save_model_for_inference, load_model_for_inf
 class BaseTrainer(ABC):
     def __init__(
             self, 
+            config,
             model, 
             device, 
             train_loader=None, 
@@ -18,6 +19,7 @@ class BaseTrainer(ABC):
             img_logger=None
         ):
         super().__init__()
+        self.config = config
         self.device = device
         self.train_loader = train_loader
         self.validation_loader = validation_loader
