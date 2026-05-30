@@ -34,6 +34,14 @@ class BasePipeline(ABC):
     def test(self, test_dataset):
         pass
 
+    @abstractmethod
+    def predict(self, input_data):
+        pass
+
+    @abstractmethod
+    def predict_random(self, dataset):
+        pass
+
     def _get_dataloader(self, dataset, use_lesion_sampler=False):
         if use_lesion_sampler:
             sampler = LesionGuaranteedBatchSampler(

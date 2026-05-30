@@ -1,3 +1,5 @@
+import random
+import torch
 from pipelines.base_pipeline import BasePipeline
 from trainers.super_resolution_trainer import SuperResolutionTrainer
 from utils.model_persistence import load_model_for_inference
@@ -47,3 +49,25 @@ class SuperResolutionPipeline(BasePipeline):
         )
 
         return trainer.test(test_loader)
+    
+    def predict(self, input_data):
+        pass
+
+    def predict_random(self, dataset):
+        model = self._init_rcan()
+        load_model_for_inference(model, self.saving_path)
+        model.to(self.device).eval()
+
+        idx = random.randint(0, len(dataset) - 1)
+        hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
+
+        input_image = lr_image
+        input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
+        with torch.no_grad():
+            output_image = model(input_image)
+
+            return {
+                'input_image': lr_image,
+                'target_image': hr_image,
+                'predicted_image': output_image.squeeze(0).cpu()
+            }

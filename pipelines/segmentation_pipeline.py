@@ -1,3 +1,5 @@
+import random
+import torch
 from pipelines.base_pipeline import BasePipeline
 from trainers.segmentation_trainer import SegmentationTrainer
 from utils.model_persistence import load_model_for_inference
@@ -49,3 +51,25 @@ class SegmentationPipeline(BasePipeline):
         )
 
         return trainer.test(test_loader)
+    
+    def predict(self, input_data):
+        pass
+
+    def predict_random(self, dataset):
+        model = self._init_unet()
+        load_model_for_inference(model, self.saving_path)
+        model.to(self.device).eval()
+        
+        idx = random.randint(0, len(dataset) - 1)
+        hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
+
+        input_image = hr_image      # can change to lr_image
+        input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
+        with torch.no_grad():
+            output_mask = model(input_image)
+            
+            return {
+                'input_image': hr_image,
+                'target_mask': hr_mask,
+                'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            }

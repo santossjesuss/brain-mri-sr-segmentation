@@ -20,3 +20,9 @@ class Experiment:
         
         pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
         return pipeline.test(self.test_dataset)
+    
+    def predict_random(self, dataset):
+        print(f"Predicting random sample from dataset '{self.dataset_name}' using experiment '{self.name}'")
+        
+        pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
+        return pipeline.predict_random(dataset)
