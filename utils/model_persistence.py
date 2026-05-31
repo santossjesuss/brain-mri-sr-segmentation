@@ -8,11 +8,17 @@ def save_model_for_inference(model, saving_name):
     )
     print(f'\t New best model saved')
 
-def load_model_for_inference(model, saving_name):
+def load_model_for_inference(model, saving_name, debug_mode=False):
     if not os.path.exists(saving_name):
         raise ValueError(f'Provided path for loading the model "{saving_name}" does not exist.')
     
-    model.load_state_dict(torch.load(saving_name))
+    if not debug_mode:
+        model.load_state_dict(torch.load(saving_name))
+    else:
+        before = sum(p.sum().item() for p in model.parameters())
+        model.load_state_dict(torch.load(saving_name))
+        after = sum(p.sum().item() for p in model.parameters())
+        print(f'\t Model loaded. Parameters changed from {before} to {after}')
 
 def save_model_checkpoint(self, epoch, validation_name, validation_score):
     torch.save({
