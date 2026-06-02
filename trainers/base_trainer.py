@@ -49,6 +49,7 @@ class BaseTrainer(ABC):
 
             if validation_score > best_validation_score:
                 best_validation_score = validation_score
+                best_metrics = validation_metrics
                 save_model_for_inference(self.model, self.saving_name)
             
             print(f'Epoch {epoch+1}/{epochs}')
@@ -56,7 +57,7 @@ class BaseTrainer(ABC):
             print(f'\tValidation Metrics: {validation_metrics}')
 
         load_model_for_inference(self.model, self.saving_name)
-        return self.model
+        return self.model, best_metrics
 
     @abstractmethod
     def _train_epoch(self, epoch, total_epochs):

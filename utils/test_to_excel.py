@@ -15,7 +15,7 @@ def test_to_excel(dataset_experiments):
             })
     
     df = pd.DataFrame(rows)
-    df.to_excel('results.xlsx', index=False)
+    df.to_excel('testing_results.xlsx', index=False)
 
 def default_dataset_experiments():
     return {
