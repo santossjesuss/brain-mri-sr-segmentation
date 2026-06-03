@@ -1,5 +1,4 @@
 import random
-from datasets.mslesseg_dataset import MSLesSegDataset
 from experiments.mslesseg_experiments import MSLesSegExperiments
 from experiments.fcdlesseg_experiments import FCDLesSegExperiments
 from utils.execution_batches import execute_training_batch, execute_testing_batch, predict_batch

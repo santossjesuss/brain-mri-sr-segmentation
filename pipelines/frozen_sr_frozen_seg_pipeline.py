@@ -68,11 +68,14 @@ class FrozenSRFrozenSegPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = sr_seg_model(input_image)
             output_mask = transforms.downsample_mask(output_mask)
+            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, lr_mask)
 
             return {
                 'input_image': lr_image,
                 'target_mask': lr_mask,
-                'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                'predicted_mask': predicted_mask,
+                'dice': dice
             }
 
     def predict_random(self, dataset):
@@ -101,9 +104,12 @@ class FrozenSRFrozenSegPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = sr_seg_model(input_image)
             output_mask = transforms.downsample_mask(output_mask)
+            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, lr_mask)
 
             return {
                 'input_image': lr_image,
                 'target_mask': lr_mask,
-                'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                'predicted_mask': predicted_mask,
+                'dice': dice
             }

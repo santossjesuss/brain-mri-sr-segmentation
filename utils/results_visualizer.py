@@ -52,6 +52,7 @@ def visualize_all_experiments(experiments_dict):
         input_image = results['input_image']
         target_mask = results['target_mask']
         predicted_mask = results['predicted_mask']
+        dice = results['dice']
 
         axes[i, 0].text(-0.2, 0.5, name, transform=axes[i, 0].transAxes, fontsize=12, weight='bold', va='center', ha='right')
         axes[i, 0].imshow(input_image.squeeze(), cmap='gray', aspect='equal')
@@ -61,6 +62,7 @@ def visualize_all_experiments(experiments_dict):
         axes[i, 1].axis('off')
 
         axes[i, 2].imshow(predicted_mask.squeeze(), cmap='gray', aspect='equal')
+        axes[i, 2].text(0.5, -0.05, f'Dice: {dice:.4f}', transform=axes[i, 2].transAxes, fontsize=10, ha='center', va='top')
         axes[i, 2].axis('off')
 
         if i == 0:

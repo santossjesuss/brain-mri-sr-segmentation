@@ -71,18 +71,22 @@ class SegmentationPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask = model(input_image)
+            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, lr_mask)
 
             if want_hr:
                 return {
                     'input_image': hr_image,
                     'target_mask': hr_mask,
-                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                    'predicted_mask': predicted_mask,
+                    'dice': dice
                 }
             else:
                 return {
                     'input_image': lr_image,
                     'target_mask': lr_mask,
-                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                    'predicted_mask': predicted_mask,
+                    'dice': dice
                 }
 
     def predict_random(self, dataset):
@@ -103,16 +107,20 @@ class SegmentationPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask = model(input_image)
-            
+            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, lr_mask)
+
             if want_hr:
                 return {
                     'input_image': hr_image,
                     'target_mask': hr_mask,
-                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                    'predicted_mask': predicted_mask,
+                    'dice': dice
                 }
             else:
                 return {
                     'input_image': lr_image,
                     'target_mask': lr_mask,
-                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                    'predicted_mask': predicted_mask,
+                    'dice': dice
                 }

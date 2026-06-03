@@ -151,3 +151,12 @@ class BasePipeline(ABC):
             base_img_log_dir=self.config.base_img_log_dir,
             model_name=self.experiment_name
         )
+    
+    def _compute_dice(self, predicted_mask, true_mask):
+        metrics = self._get_seg_validation_metrics()
+        metrics.update(
+            predicted_mask.unsqueeze(0),
+            true_mask.unsqueeze(0).long()
+        )
+
+        return metrics.compute()['dice']
