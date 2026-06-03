@@ -35,7 +35,7 @@ class BasePipeline(ABC):
         pass
 
     @abstractmethod
-    def predict(self, input_data):
+    def predict(self, input_tensor):
         pass
 
     @abstractmethod

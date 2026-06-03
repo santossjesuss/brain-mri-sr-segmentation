@@ -52,8 +52,23 @@ class SuperResolutionPipeline(BasePipeline):
 
         return trainer.test(test_loader)
     
-    def predict(self, input_data):
-        pass
+    def predict(self, input_tensor):
+        model = self._init_rcan()
+        load_model_for_inference(model, self.saving_path)
+        model.to(self.device).eval()
+
+        hr_image, hr_mask, lr_image, lr_mask = input_tensor
+
+        input_image = lr_image
+        input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
+        with torch.no_grad():
+            output_image = model(input_image)
+
+            return {
+                'input_image': lr_image,
+                'target_image': hr_image,
+                'predicted_image': output_image.squeeze(0).cpu()
+            }
 
     def predict_random(self, dataset):
         model = self._init_rcan()

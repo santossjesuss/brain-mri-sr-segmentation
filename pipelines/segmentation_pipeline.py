@@ -54,10 +54,40 @@ class SegmentationPipeline(BasePipeline):
 
         return trainer.test(test_loader)
     
-    def predict(self, input_data):
-        pass
+    def predict(self, input_tensor):
+        want_hr = False
+
+        model = self._init_unet()
+        load_model_for_inference(model, self.saving_path)
+        model.to(self.device).eval()
+
+        hr_image, hr_mask, lr_image, lr_mask = input_tensor
+
+        if want_hr:
+            input_image = hr_image
+        else:
+            input_image = lr_image
+
+        input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
+        with torch.no_grad():
+            output_mask = model(input_image)
+
+            if want_hr:
+                return {
+                    'input_image': hr_image,
+                    'target_mask': hr_mask,
+                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                }
+            else:
+                return {
+                    'input_image': lr_image,
+                    'target_mask': lr_mask,
+                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                }
 
     def predict_random(self, dataset):
+        want_hr = False
+        
         model = self._init_unet()
         load_model_for_inference(model, self.saving_path)
         model.to(self.device).eval()
@@ -65,13 +95,24 @@ class SegmentationPipeline(BasePipeline):
         idx = random.randint(0, len(dataset) - 1)
         hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
 
-        input_image = hr_image      # can change to lr_image
+        if want_hr:
+            input_image = hr_image
+        else:
+            input_image = lr_image
+
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask = model(input_image)
             
-            return {
-                'input_image': hr_image,
-                'target_mask': hr_mask,
-                'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
-            }
+            if want_hr:
+                return {
+                    'input_image': hr_image,
+                    'target_mask': hr_mask,
+                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                }
+            else:
+                return {
+                    'input_image': lr_image,
+                    'target_mask': lr_mask,
+                    'predicted_mask': torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+                }

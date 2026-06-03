@@ -21,9 +21,15 @@ class Experiment:
         
         pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
         return pipeline.test(self.test_dataset)
+
+    def predict(self, idx):
+        print(f"Predicting on input image using experiment '{self.name}'")
+        
+        pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
+        return pipeline.predict(self.test_dataset[idx])
     
-    def predict_random(self, dataset):
+    def predict_random(self):
         print(f"Predicting random sample from dataset '{self.dataset_name}' using experiment '{self.name}'")
         
         pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
-        return pipeline.predict_random(dataset)
+        return pipeline.predict_random(self.test_dataset)
