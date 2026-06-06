@@ -67,8 +67,9 @@ class FrozenSRFrozenSegPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask, _ = sr_seg_model(input_image)
+            output_mask = torch.argmax(output_mask, dim=1).float()
             output_mask = transforms.downsample_mask(output_mask)
-            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 
             return {
@@ -103,8 +104,9 @@ class FrozenSRFrozenSegPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask, _ = sr_seg_model(input_image)
+            output_mask = torch.argmax(output_mask, dim=1).float()
             output_mask = transforms.downsample_mask(output_mask)
-            predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
+            predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 
             return {

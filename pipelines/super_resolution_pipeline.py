@@ -63,11 +63,12 @@ class SuperResolutionPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_image = model(input_image)
+            predicted_image = output_image.squeeze(0).cpu()
 
             return {
                 'input_image': lr_image,
                 'target_image': hr_image,
-                'predicted_image': output_image.squeeze(0).cpu()
+                'predicted_image': predicted_image
             }
 
     def predict_random(self, dataset):
@@ -82,9 +83,10 @@ class SuperResolutionPipeline(BasePipeline):
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_image = model(input_image)
+            predicted_image = output_image.squeeze(0).cpu()
 
             return {
                 'input_image': lr_image,
                 'target_image': hr_image,
-                'predicted_image': output_image.squeeze(0).cpu()
+                'predicted_image': predicted_image
             }
