@@ -4,5 +4,3 @@ venv
 data
 logs
 debug
-trained_models
-results.xlsx
