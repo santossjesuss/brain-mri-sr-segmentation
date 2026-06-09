@@ -86,8 +86,6 @@ class BasePipeline(ABC):
     def _get_seg_loss(self):
         if self.dataset_name == MSLesSegConfig.dataset_name:
             return self._get_dice_ce_combined_loss()
-        elif self.dataset_name == FCDLesSegConfig.dataset_name:
-            return self._get_focal_tversky_loss()
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset_name}")
     

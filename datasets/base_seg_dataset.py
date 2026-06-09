@@ -5,10 +5,11 @@ from torchvision.io import read_image, ImageReadMode
 from transforms.base_transforms import BaseTransforms
 
 class BaseSegmentationDataset(Dataset, ABC):
-    def __init__(self, is_training, scale_factor, dataset_path=None, view='axial'):
+    def __init__(self, is_training, scale_factor, is_control_dataset=False, dataset_path=None, view='axial'):
         super().__init__()
         self.view = view
         self.is_training = is_training
+        self.is_control_dataset = is_control_dataset
 
         self.dataset_path = self._resolve_dataset_path(dataset_path=dataset_path)
         self.image_paths = self._get_data_path(is_image=True)
@@ -16,7 +17,6 @@ class BaseSegmentationDataset(Dataset, ABC):
         
         self.image_names = self._get_names(data_path=self.image_paths)
         self.mask_names = self._get_names(data_path=self.mask_paths)
-        self.images_with_lesion, self.masks_with_lesion = self._get_with_lesion()
         
         self.transforms = BaseTransforms(scale_factor=scale_factor)
         
@@ -42,8 +42,18 @@ class BaseSegmentationDataset(Dataset, ABC):
 
         return hr_image, hr_mask, lr_image, lr_mask
 
-    @abstractmethod
     def get_default_folder_name(self):
+        if self.is_control_dataset:
+            return self.get_default_control_folder_name()
+        else:
+            return self.get_default_lesion_folder_name()
+
+    @abstractmethod
+    def get_default_lesion_folder_name(self):
+        pass
+
+    @abstractmethod
+    def get_default_control_folder_name(self):
         pass
 
     def _resolve_dataset_path(self, dataset_path):
@@ -64,16 +74,3 @@ class BaseSegmentationDataset(Dataset, ABC):
     
     def _get_names(self, data_path):
         return sorted(os.listdir(data_path))
-        
-    def _get_with_lesion(self):
-        images_with_lesion = []
-        masks_with_lesion = []
-
-        for image_name, mask_name in zip(self.image_names, self.mask_names):
-            mask_path = os.path.join(self.mask_paths, mask_name)
-            mask = read_image(mask_path, mode=ImageReadMode.GRAY)
-            if mask.max() > 0:
-                images_with_lesion.append(image_name)
-                masks_with_lesion.append(mask_name)
-        
-        return images_with_lesion, masks_with_lesion
