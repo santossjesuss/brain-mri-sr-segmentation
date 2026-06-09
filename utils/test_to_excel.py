@@ -1,6 +1,5 @@
 import pandas as pd
 from experiments.mslesseg_experiments import MSLesSegExperiments
-from experiments.fcdlesseg_experiments import FCDLesSegExperiments
 
 def test_to_excel(dataset_experiments):
     rows = []

@@ -21,6 +21,12 @@ class Experiment:
         
         pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
         return pipeline.test(self.test_dataset)
+    
+    def test_validation_dataset(self):
+        print(f"Testing experiment {self.name} on 'validation dataset'")
+
+        pipeline = self.pipeline(config=self.config, experiment_name=self.name, data_resolution=self.data_resolution)
+        return pipeline.test_validation_dataset(self.validation_dataset)
 
     def predict(self, idx):
         print(f"Predicting on input image using experiment '{self.name}'")

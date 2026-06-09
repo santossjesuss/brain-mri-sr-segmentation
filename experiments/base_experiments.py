@@ -1,5 +1,5 @@
 from abc import ABC
-from torch.utils.data import random_split
+from torch.utils.data import ConcatDataset, Subset
 from experiments.experiment import Experiment
 from enums.resolution_enum import Resolution
 from pipelines.super_resolution_pipeline import SuperResolutionPipeline
@@ -15,33 +15,65 @@ class BaseExperiments(ABC):
         super().__init__()
         self.config = config
 
-        complete_train_dataset = dataset(
+        lesion_training_dataset = dataset(
             is_training=True, 
+            is_control_dataset=False,
             view=self.config.view, 
             scale_factor=self.config.scale_factor
         )
-        train_size, validation_size = self._get_train_validation_sizes(
-            train_dataset_size=len(complete_train_dataset), 
-            train_perc=self.config.train_perc_size
+        control_training_dataset = dataset(
+            is_training=True,
+            is_control_dataset=True,
+            view=self.config.view,
+            scale_factor=self.config.scale_factor
         )
-        train_subset, validation_subset = random_split(
-            dataset=complete_train_dataset, 
-            lengths=[train_size, validation_size]
-        )
+        lesion_train_indices, lesion_validation_indices = self._get_patients_split(lesion_training_dataset.image_names, self.config.train_perc_size, is_control=False)
+        control_train_indices, control_validation_indices = self._get_patients_split(control_training_dataset.image_names, self.config.train_perc_size, is_control=True)
+        self.train_dataset = ConcatDataset([
+            Subset(lesion_training_dataset, lesion_train_indices),
+            Subset(control_training_dataset, control_train_indices)
+        ])
+        self.validation_dataset = ConcatDataset([
+            Subset(lesion_training_dataset, lesion_validation_indices),
+            Subset(control_training_dataset, control_validation_indices)
+        ])
 
-        self.train_dataset = train_subset
-        self.validation_dataset = validation_subset
-        self.test_dataset = dataset(
-            is_training=False, 
+        lesion_testing_dataset = dataset(
+            is_training=False,
+            is_control_dataset=False,
             view=self.config.view, 
             scale_factor=self.config.scale_factor
         )
+        control_testing_dataset = dataset(
+            is_training=False,
+            is_control_dataset=True,
+            view=self.config.view, 
+            scale_factor=self.config.scale_factor
+        )
+        self.test_dataset = ConcatDataset([
+            lesion_testing_dataset,
+            control_testing_dataset
+        ])
     
     def _get_train_validation_sizes(self, train_dataset_size, train_perc):
         train_size = int(train_perc * train_dataset_size)
         validation_size = train_dataset_size - train_size
 
         return train_size, validation_size
+    
+    def _get_patients_split(self, names, train_perc, is_control):
+        patient_ids = sorted(set(name.split('_')[1] for name in names))
+        train_size, _ = self._get_train_validation_sizes(len(patient_ids), train_perc)
+        train_patients = set(patient_ids[:train_size])
+        validation_patients = set(patient_ids[train_size:])
+
+        train_indices = [i for i, name in enumerate(names) if name.split('_')[1] in train_patients]
+        validation_indices = [i for i, name in enumerate(names) if name.split('_')[1] in validation_patients]
+
+        subset_type = 'Control' if is_control else 'Lesion'
+        print(f"{subset_type} subset - Train patients: {len(train_patients)} ({len(train_indices)} slices), Val patients: {len(validation_patients)} ({len(validation_indices)} slices)")
+
+        return train_indices, validation_indices
     
     def _create_experiment(self, name, pipeline, data_resolution=None):
         return Experiment(
