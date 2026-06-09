@@ -73,6 +73,9 @@ class JointSRSegCombinedPipeline(BasePipeline):
         )
 
         return trainer.test(test_loader)
+
+    def test_validation_subset(self, validation_dataset):
+        pass
     
     def predict(self, input_tensor):
         sr_model = self._init_rcan()

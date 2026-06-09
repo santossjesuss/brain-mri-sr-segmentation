@@ -4,7 +4,6 @@ import torch.nn as nn
 from torch.nn.utils import clip_grad_norm_
 import torch.optim as optim
 from configs.mslesseg_config import MSLesSegConfig
-from configs.fcdlesseg_config import FCDLesSegConfig 
 from torch.utils.data import DataLoader
 from samplers.lesion_guaranteed_sampler import LesionGuaranteedBatchSampler
 import segmentation_models_pytorch as smp

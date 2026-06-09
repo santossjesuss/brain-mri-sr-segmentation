@@ -54,6 +54,24 @@ class SegmentationPipeline(BasePipeline):
 
         return trainer.test(test_loader)
     
+    def test_validation_subset(self, validation_dataset):
+        validation_loader = self._get_dataloader(validation_dataset)
+
+        model = self._init_unet()
+        validation_metrics = self._get_seg_validation_metrics()
+
+        load_model_for_inference(model, self.saving_path)
+
+        trainer = SegmentationTrainer(
+            config=self.config,
+            model=model,
+            device=self.device,
+            validation_metrics=validation_metrics,
+            data_resolution=self.data_resolution
+        )
+
+        return trainer.test(validation_loader)
+    
     def predict(self, input_tensor):
         want_hr = False
 

@@ -19,6 +19,7 @@ class FrozenSRTrainableSegPipeline(BasePipeline):
         seg_model = self._init_unet()
         criterion = self._get_seg_loss()
         validation_metrics = self._get_seg_validation_metrics()
+        logger = self._get_logger()
         img_logger = self._get_img_logger()
 
         sr_path = os.path.join(self.config.folder_name, f'{self.config.sr_name}.pth')
