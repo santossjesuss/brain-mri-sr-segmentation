@@ -44,6 +44,7 @@ class FrozenSRTrainableSegPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
+            logger=logger,
             img_logger=img_logger,
             saving_name=self.saving_path
         )

@@ -33,6 +33,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         )
         optimizer = self._get_optimizer(trainable_sr_frozen_seg_model.parameters())
         scheduler = self._get_scheduler(optimizer)
+        gradient_clipper = self._get_gradient_clipper(trainable_sr_frozen_seg_model)
 
         trainer = MultiStageTrainer(
             config=self.config,
@@ -44,6 +45,8 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
+            gradient_clipper=gradient_clipper,
+            logger=logger,
             img_logger=img_logger,
             saving_name=self.saving_path
         )

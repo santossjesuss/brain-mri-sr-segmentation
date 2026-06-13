@@ -30,6 +30,7 @@ class JointSRSegE2EPipeline(BasePipeline):
 
         optimizer = self._get_optimizer(joint_sr_seg_e2e_model.parameters())
         scheduler = self._get_scheduler(optimizer)
+        # gradient_clipper = self._get_gradient_clipper(joint_sr_seg_e2e_model)
 
         trainer = MultiStageTrainer(
             config=self.config,
@@ -41,6 +42,8 @@ class JointSRSegE2EPipeline(BasePipeline):
             validation_metrics=validation_metrics,
             optimizer=optimizer,
             scheduler=scheduler,
+            # gradient_clipper=gradient_clipper,
+            logger=logger,
             img_logger=img_logger,
             saving_name=self.saving_path
         )
