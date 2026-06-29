@@ -20,7 +20,6 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         criterion = self._get_seg_loss()
         validation_metrics = self._get_seg_validation_metrics()
         logger = self._get_logger()
-        img_logger = self._get_img_logger()
 
         seg_path = os.path.join(self.config.folder_name, f'{self.config.hr_seg_name}.pth')
         load_model_for_inference(model=seg_model, saving_name=seg_path)
@@ -47,7 +46,6 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
             scheduler=scheduler,
             gradient_clipper=gradient_clipper,
             logger=logger,
-            img_logger=img_logger,
             saving_name=self.saving_path
         )
 
