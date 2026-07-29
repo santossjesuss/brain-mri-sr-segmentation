@@ -19,13 +19,17 @@ class BaseExperiments(ABC):
             is_training=True, 
             is_control_dataset=False,
             view=self.config.view, 
-            scale_factor=self.config.scale_factor
+            scale_factor=self.config.scale_factor,
+            target_width=self.config.target_width,
+            target_height=self.config.target_height
         )
         control_training_dataset = dataset(
             is_training=True,
             is_control_dataset=True,
             view=self.config.view,
-            scale_factor=self.config.scale_factor
+            scale_factor=self.config.scale_factor,
+            target_width=self.config.target_width,
+            target_height=self.config.target_height
         )
         lesion_train_indices, lesion_validation_indices = self._get_patients_split(lesion_training_dataset.image_names, self.config.train_perc_size, is_control=False)
         control_train_indices, control_validation_indices = self._get_patients_split(control_training_dataset.image_names, self.config.train_perc_size, is_control=True)
@@ -42,13 +46,17 @@ class BaseExperiments(ABC):
             is_training=False,
             is_control_dataset=False,
             view=self.config.view, 
-            scale_factor=self.config.scale_factor
+            scale_factor=self.config.scale_factor,
+            target_width=self.config.target_width,
+            target_height=self.config.target_height
         )
         control_testing_dataset = dataset(
             is_training=False,
             is_control_dataset=True,
             view=self.config.view, 
-            scale_factor=self.config.scale_factor
+            scale_factor=self.config.scale_factor,
+            target_width=self.config.target_width,
+            target_height=self.config.target_height
         )
         self.test_dataset = ConcatDataset([
             lesion_testing_dataset,

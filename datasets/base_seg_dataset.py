@@ -5,7 +5,7 @@ from torchvision.io import read_image, ImageReadMode
 from transforms.base_transforms import BaseTransforms
 
 class BaseSegmentationDataset(Dataset, ABC):
-    def __init__(self, is_training, scale_factor, is_control_dataset=False, dataset_path=None, view='axial'):
+    def __init__(self, is_training, scale_factor, target_width, target_height, is_control_dataset=False, dataset_path=None, view='axial'):
         super().__init__()
         self.view = view
         self.is_training = is_training
@@ -18,7 +18,7 @@ class BaseSegmentationDataset(Dataset, ABC):
         self.image_names = self._get_names(data_path=self.image_paths)
         self.mask_names = self._get_names(data_path=self.mask_paths)
         
-        self.transforms = BaseTransforms(scale_factor=scale_factor)
+        self.transforms = BaseTransforms(scale_factor=scale_factor, target_width=target_width, target_height=target_height)
         
     def __len__(self):
         return len(self.image_names)
@@ -28,9 +28,9 @@ class BaseSegmentationDataset(Dataset, ABC):
         mask_path = os.path.join(self.mask_paths, self.mask_names[idx])
         
         hr_image = read_image(image_path, mode=ImageReadMode.GRAY)
-        lr_image = self.transforms.downsample_image(hr_image)
+        lr_image = self.transforms.downsample_image_torch(hr_image)
         hr_mask = read_image(mask_path, mode=ImageReadMode.GRAY)
-        lr_mask = self.transforms.downsample_mask(hr_mask)
+        lr_mask = self.transforms.downsample_mask_torch(hr_mask)
 
         hr_image = self.transforms.normalize_image(hr_image)
         lr_image = self.transforms.normalize_image(lr_image)
