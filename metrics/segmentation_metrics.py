@@ -1,51 +1,23 @@
 from metrics.base_metrics import BaseMetrics
-from torchmetrics.segmentation import DiceScore, MeanIoU
-from torchmetrics.classification import Precision, Recall
+from torchmetrics.classification import (
+    BinaryF1Score,
+    BinaryJaccardIndex,
+    BinaryPrecision, 
+    BinaryRecall
+)
 
 class SegmentationMetrics(BaseMetrics):
-    def __init__(self, num_classes):
+    def __init__(self):
         super().__init__()
-        self._init_mean_metrics(num_classes)
-        # self._init_listed_metrics(num_classes)    # debugging
+        self.zero_division = 0.0
+        self._init_metrics()
 
     def update(self, predicted_masks, true_masks):
         for metric in self.metrics.values():
             metric.update(predicted_masks, true_masks)
 
-    def _init_mean_metrics(self, num_classes):
-        self.metrics['dice'] = DiceScore(
-            num_classes=num_classes, 
-            average='macro'
-        )
-        self.metrics['iou'] = MeanIoU(
-            num_classes=num_classes
-        )
-        self.metrics['precision'] = Precision(
-            task='multiclass', 
-            num_classes=num_classes, 
-            average='macro'
-        )
-        self.metrics['recall'] = Recall(
-            task='multiclass', 
-            num_classes=num_classes, 
-            average='macro'
-        )
-
-    def _init_listed_metrics(self, num_classes):
-        self.metrics['dice'] = DiceScore(
-            num_classes=num_classes, 
-            average=None
-        )
-        self.metrics['iou'] = MeanIoU(
-            num_classes=num_classes
-        )
-        self.metrics['precision'] = Precision(
-            task='multiclass', 
-            num_classes=num_classes, 
-            average=None
-        )
-        self.metrics['recall'] = Recall(
-            task='multiclass', 
-            num_classes=num_classes, 
-            average=None
-        )
+    def _init_metrics(self):
+        self.metrics['dice'] = BinaryF1Score(zero_division=self.zero_division)
+        self.metrics['iou'] = BinaryJaccardIndex(zero_division=self.zero_division)
+        self.metrics['precision'] = BinaryPrecision(zero_division=self.zero_division)
+        self.metrics['recall'] = BinaryRecall(zero_division=self.zero_division)
