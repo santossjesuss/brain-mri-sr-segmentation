@@ -58,6 +58,10 @@ class BaseConfig:
     # dice_weight: float = 0.7
     # cross_entropy_weight: float = 0.3
 
+    # --|V.4 Hiperparameters|--
+    learning_rate: float = 1e-4
+    dice_weight: float = 0.7
+    cross_entropy_weight: float = 0.3
 
     # Saving config
     folder_name: str = 'trained_models'
