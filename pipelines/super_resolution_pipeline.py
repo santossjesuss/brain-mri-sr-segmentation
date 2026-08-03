@@ -2,6 +2,7 @@ import random
 import torch
 from pipelines.base_pipeline import BasePipeline
 from trainers.super_resolution_trainer import SuperResolutionTrainer
+from enums.hyperparameter_enum import HyperparameterVersion
 from utils.model_persistence import load_model_for_inference
 
 class SuperResolutionPipeline(BasePipeline):
@@ -12,10 +13,12 @@ class SuperResolutionPipeline(BasePipeline):
         train_loader = self._get_dataloader(train_dataset)
         validation_loader = self._get_dataloader(validation_dataset)
 
+        version = HyperparameterVersion.V1
+
         model = self._init_rcan()
         criterion = self._get_sr_loss()
         validation_metrics = self._get_sr_validation_metrics()
-        optimizer = self._get_optimizer(model.parameters())
+        optimizer = self._get_optimizer(model.parameters(), version)
         scheduler = self._get_scheduler(optimizer)
         logger = self._get_logger()
 

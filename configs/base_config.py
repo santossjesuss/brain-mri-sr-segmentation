@@ -7,6 +7,8 @@ class BaseConfig:
     epochs: int = 100
     batch_size: int = 16
     num_workers: int = 4
+    learning_rate_v1: float = 1e-4
+    learning_rate_v3: float = 3e-4
     shuffle_data: bool = True
 
     # SuperRes config
@@ -30,38 +32,21 @@ class BaseConfig:
     
     # Segmentation config
     seg_model_name: str = 'resnet34'
-    # seg_encoder_weights: str = None       # pre-cambios de Karl 
-    seg_encoder_weights: str = 'imagenet'   # cambio sugerido
+    seg_encoder_weights: str = None       # pre-cambios de Karl 
+    # seg_encoder_weights: str = 'imagenet'   # cambio sugerido
 
     # Losses config
     sr_loss_weight: float = 0.5
     seg_loss_weight: float = 0.5
+    dice_weight_v1: float = 0.5
+    cross_entropy_weight_v1: float = 0.5
+    dice_weight_v3: float = 0.7
+    cross_entropy_weight_v3: float = 0.3
 
     # Meta-parameters config
     lr_scheduler_factor: float = 0.5
     lr_scheduler_patience: int = 5
     max_grad_norm: float = 1.0
-
-    # Hiperparameter Tuning
-    # --|V.1 Hiperparameters|--
-    learning_rate: float = 1e-4
-    dice_weight: float = 0.5
-    cross_entropy_weight: float = 0.5
-
-    # --|V.2 Hiperparameters|--
-    # learning_rate: float = 3e-4
-    # dice_weight: float = 0.5
-    # cross_entropy_weight: float = 0.5
-
-    # --|V.3 Hiperparameters|--
-    # learning_rate: float = 3e-4
-    # dice_weight: float = 0.7
-    # cross_entropy_weight: float = 0.3
-
-    # --|V.4 Hiperparameters|--
-    learning_rate: float = 1e-4
-    dice_weight: float = 0.7
-    cross_entropy_weight: float = 0.3
 
     # Saving config
     folder_name: str = 'trained_models'
@@ -76,3 +61,24 @@ class BaseConfig:
 
     # Logging config
     base_img_log_dir: str = 'logs/images'
+
+    # Hiperparameter Tuning
+    # --|V.1 Hiperparameters|--
+    # learning_rate: float = 1e-4
+    # dice_weight: float = 0.5
+    # cross_entropy_weight: float = 0.5
+
+    # --|V.2 Hiperparameters|--
+    # learning_rate: float = 3e-4
+    # dice_weight: float = 0.5
+    # cross_entropy_weight: float = 0.5
+
+    # --|V.3 Hiperparameters|--
+    # learning_rate: float = 3e-4
+    # dice_weight: float = 0.7
+    # cross_entropy_weight: float = 0.3
+
+    # --|V.4 Hiperparameters|--
+    # learning_rate: float = 1e-4
+    # dice_weight: float = 0.7
+    # cross_entropy_weight: float = 0.3

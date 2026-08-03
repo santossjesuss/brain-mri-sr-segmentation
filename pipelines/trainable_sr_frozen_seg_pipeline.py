@@ -4,6 +4,7 @@ import torch
 from pipelines.base_pipeline import BasePipeline
 from models.multi_stage_model import MultiStageModel
 from trainers.multi_stage_trainer import MultiStageTrainer
+from enums.hyperparameter_enum import HyperparameterVersion
 from utils.model_persistence import load_model_for_inference
 from transforms.base_transforms import BaseTransforms
 
@@ -15,9 +16,11 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         train_loader = self._get_dataloader(train_dataset, use_lesion_sampler=self.config.use_lesion_sampler)
         validation_loader = self._get_dataloader(validation_dataset)
 
+        version = HyperparameterVersion.V1
+
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
-        criterion = self._get_seg_loss()
+        criterion = self._get_seg_loss(version=version)
         validation_metrics = self._get_seg_validation_metrics()
         logger = self._get_logger()
 
@@ -30,7 +33,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
             freeze_stage_1=False, 
             freeze_stage_2=True
         )
-        optimizer = self._get_optimizer(trainable_sr_frozen_seg_model.parameters())
+        optimizer = self._get_optimizer(trainable_sr_frozen_seg_model.parameters(), version)
         scheduler = self._get_scheduler(optimizer)
         gradient_clipper = self._get_gradient_clipper(trainable_sr_frozen_seg_model)
 

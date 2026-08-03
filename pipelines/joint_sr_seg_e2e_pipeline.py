@@ -3,6 +3,7 @@ import torch
 from pipelines.base_pipeline import BasePipeline
 from models.multi_stage_model import MultiStageModel
 from trainers.multi_stage_trainer import MultiStageTrainer
+from enums.hyperparameter_enum import HyperparameterVersion
 from utils.model_persistence import load_model_for_inference
 from transforms.base_transforms import BaseTransforms
 
@@ -13,10 +14,12 @@ class JointSRSegE2EPipeline(BasePipeline):
     def run(self, train_dataset, validation_dataset):
         train_loader = self._get_dataloader(train_dataset, use_lesion_sampler=self.config.use_lesion_sampler)
         validation_loader = self._get_dataloader(validation_dataset)
+
+        version = HyperparameterVersion.V1
     
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
-        criterion = self._get_seg_loss()
+        criterion = self._get_seg_loss(version)
         validation_metrics = self._get_seg_validation_metrics()
         logger = self._get_logger()
 
@@ -27,7 +30,7 @@ class JointSRSegE2EPipeline(BasePipeline):
             freeze_stage_2=False
         )
 
-        optimizer = self._get_optimizer(joint_sr_seg_e2e_model.parameters())
+        optimizer = self._get_optimizer(joint_sr_seg_e2e_model.parameters(), version)
         scheduler = self._get_scheduler(optimizer)
         # gradient_clipper = self._get_gradient_clipper(joint_sr_seg_e2e_model)
 

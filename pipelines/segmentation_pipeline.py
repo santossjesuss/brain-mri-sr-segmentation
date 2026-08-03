@@ -2,20 +2,32 @@ import random
 import torch
 from pipelines.base_pipeline import BasePipeline
 from trainers.segmentation_trainer import SegmentationTrainer
+from enums.hyperparameter_enum import HyperparameterVersion
+from enums.resolution_enum import Resolution
 from utils.model_persistence import load_model_for_inference
 
 class SegmentationPipeline(BasePipeline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def _get_hyperparameter_version(self):
+        if self.data_resolution == Resolution.HR:
+            version = HyperparameterVersion.V1
+        else:
+            version = HyperparameterVersion.V3
+
+        return version
+
     def run(self, train_dataset, validation_dataset):
         train_loader = self._get_dataloader(train_dataset, use_lesion_sampler=self.config.use_lesion_sampler)
         validation_loader = self._get_dataloader(validation_dataset)
 
+        version = self._get_hyperparameter_version()
+
         model = self._init_unet()
-        criterion = self._get_seg_loss()
+        criterion = self._get_seg_loss(version=version)
         validation_metrics = self._get_seg_validation_metrics()
-        optimizer = self._get_optimizer(model.parameters())
+        optimizer = self._get_optimizer(model.parameters(), version)
         scheduler = self._get_scheduler(optimizer)
         logger = self._get_logger()
 

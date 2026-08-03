@@ -12,6 +12,7 @@ from losses.dice_ce_combined_loss import DiceCECombinedLoss
 from losses.sr_seg_combined_loss import SRSegCombinedLoss
 from metrics.superres_metrics import SuperResolutionMetrics
 from metrics.segmentation_metrics import SegmentationMetrics
+from enums.hyperparameter_enum import HyperparameterVersion
 from loggers.tensorboard_logger import TensorBoardLogger
 from loggers.image_logger import ImageLogger
 from utils.gpu import enable_cuda
@@ -83,29 +84,30 @@ class BasePipeline(ABC):
     def _get_sr_loss(self):
         return nn.L1Loss()
 
-    def _get_seg_loss(self):
+    def _get_seg_loss(self, version):
         if self.dataset_name == MSLesSegConfig.dataset_name:
-            return self._get_dice_ce_combined_loss()
+            return self._get_dice_ce_combined_loss(version=version)
         else:
             raise ValueError(f"Unsupported dataset: {self.dataset_name}")
     
-    def _get_dice_ce_combined_loss(self):
+    def _get_dice_ce_combined_loss(self, version):
+        if HyperparameterVersion.V1 == version:
+            dice_weight = self.config.dice_weight_v1
+            cross_entropy_weight = self.config.cross_entropy_weight_v1
+        elif HyperparameterVersion.V3 == version:
+            dice_weight = self.config.dice_weight_v3
+            cross_entropy_weight = self.config.cross_entropy_weight_v3
+        else:
+            raise ValueError(f"Unsupported hyperparameter version value: {version}")
+
         return DiceCECombinedLoss(
-            dice_weight=self.config.dice_weight, 
-            cross_entropy_weight=self.config.cross_entropy_weight
-        )
-        
-    def _get_focal_tversky_loss(self):
-        return smp.losses.TverskyLoss(
-            mode='multiclass', #might change to 'binary'
-            alpha=self.config.tversky_alpha,
-            beta=self.config.tversky_beta,
-            smooth=self.config.tversky_smooth
+            dice_weight=dice_weight, 
+            cross_entropy_weight=cross_entropy_weight
         )
 
     def _get_combined_sr_seg_loss(self):
         sr_loss = self._get_sr_loss()
-        seg_loss = self._get_seg_loss()
+        seg_loss = self._get_seg_loss(HyperparameterVersion.V1)
         
         return SRSegCombinedLoss(
             sr_loss_fn=sr_loss,
@@ -122,10 +124,17 @@ class BasePipeline(ABC):
             num_classes=self.config.seg_classes
         )
 
-    def _get_optimizer(self, model_params):
+    def _get_optimizer(self, model_params, hyperparameter_version):
+        if HyperparameterVersion.V1 == hyperparameter_version:
+            learning_rate = self.config.learning_rate_v1
+        elif HyperparameterVersion.V3 == hyperparameter_version:
+            learning_rate = self.config.learning_rate_v3
+        else:
+            raise ValueError(f"Unsupported hyperparameter version value: {hyperparameter_version}")
+
         return optim.Adam(
             model_params,
-            lr=self.config.learning_rate
+            lr=learning_rate
         )
     
     def _get_scheduler(self, optimizer):
