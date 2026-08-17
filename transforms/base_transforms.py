@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import albumentations as A
 
 class BaseTransforms():
-    def __init__(self, scale_factor, target_width, target_height):
+    def __init__(self, scale_factor, target_width=None, target_height=None):
         self.scale_factor = scale_factor
         self.downsample_factor = self._calc_downsample_factor(scale_factor)
         self.target_dimensions = (target_width, target_height)
