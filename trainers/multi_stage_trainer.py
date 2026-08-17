@@ -21,7 +21,7 @@ class MultiStageTrainer(BaseTrainer):
             self.optimizer.zero_grad(set_to_none=True)
             pred_hr_masks_logits, pred_hr_image = self.model(lr_image)
             
-            self.img_logger.log_batch_images(pred_hr_image, epoch, batch_idx)
+            # self.img_logger.log_batch_images(pred_hr_image, epoch, batch_idx)
             
             if self.use_combined_loss:
                 loss = self.criterion(pred_hr_image, hr_image, pred_hr_masks_logits, hr_masks)
@@ -49,7 +49,7 @@ class MultiStageTrainer(BaseTrainer):
                 pred_hr_masks_logits, _ = self.model(lr_image)
                 predicted_hr_masks = torch.argmax(pred_hr_masks_logits, dim=1)    # (Batch, H, W)
                 predicted_hr_masks = predicted_hr_masks.float()
-                predicted_masks = self.transform.downsample_mask(predicted_hr_masks)
+                predicted_masks = self.transform.downsample_mask_cv(predicted_hr_masks)
                 predicted_masks = predicted_masks.long()
 
                 self.validation_metrics.update(predicted_masks, lr_masks)
