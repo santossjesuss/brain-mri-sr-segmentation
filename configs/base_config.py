@@ -2,13 +2,19 @@ from dataclasses import dataclass
 
 @dataclass
 class BaseConfig:
+    '''
+    Each hyperparameter version is targeted to a different model, and is optimized
+    for the dimension of the segmentation:
+    - Version 1: SR-Seg pipelines (using HR-Segmentation)
+    - Version 3: LR-Segmentation 
+    '''
     # --|Server config|--
     # Training config
     epochs: int = 100
     batch_size: int = 16
     num_workers: int = 4
-    learning_rate_v1: float = 1e-4
-    learning_rate_v3: float = 3e-4
+    learning_rate_v1: float = 1e-4  # For SR-Seg pipelines
+    learning_rate_v3: float = 3e-4  # For LR-Segmentation (baseline)
     shuffle_data: bool = True
 
     # SuperRes config

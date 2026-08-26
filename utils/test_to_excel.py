@@ -25,6 +25,7 @@ def default_dataset_experiments():
 def default_model_experiments(dataset_experiments):
     return {
         'LR Seg': dataset_experiments.get_lr_segmentation(),
+        # 'HR Seg': dataset_experiments.get_hr_segmentation(),
         'Frozen SR -> Frozen Seg': dataset_experiments.get_frozen_sr_frozen_seg(),
         'Frozen SR -> Trainable Seg': dataset_experiments.get_frozen_sr_trainable_seg(),
         'Trainable SR -> Frozen Seg': dataset_experiments.get_trainable_sr_frozen_seg(),

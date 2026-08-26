@@ -100,7 +100,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = trainable_sr_frozen_seg_model(input_image)
             output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask(output_mask)
+            output_mask = transforms.downsample_mask_torch(output_mask)
             predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 
@@ -133,7 +133,7 @@ class TrainableSRFrozenSegPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = trainable_sr_frozen_seg_model(input_image)
             output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask(output_mask)
+            output_mask = transforms.downsample_mask_torch(output_mask)
             predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 

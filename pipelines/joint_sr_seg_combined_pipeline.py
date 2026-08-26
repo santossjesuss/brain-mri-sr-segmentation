@@ -101,7 +101,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = joint_sr_seg_combined_model(input_image)
             output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask(output_mask)
+            output_mask = transforms.downsample_mask_torch(output_mask)
             predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 
@@ -134,7 +134,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         with torch.no_grad():
             output_mask, _ = joint_sr_seg_combined_model(input_image)
             output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask(output_mask)
+            output_mask = transforms.downsample_mask_torch(output_mask)
             predicted_mask = output_mask.long().squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 

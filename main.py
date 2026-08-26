@@ -4,10 +4,11 @@ from utils.execution_batches import execute_training_batch, execute_testing_batc
 from utils.train_to_excel import train_to_excel
 from utils.test_to_excel import test_to_excel, default_dataset_experiments
 from utils.results_visualizer import visualize_superres_model, visualize_seg_model, visualize_all_experiments
+from utils.results_saver import save_qualitative_results
 
 def main():
     ms_experiments = MSLesSegExperiments()
-    
+        
     # -|Complete experiments training|-
     training_results = {}
     training_results['MS'] = execute_training_batch(experiments=ms_experiments)
@@ -19,13 +20,14 @@ def main():
 
     # ------------------------------------------------------
 
-    # -|Visualization|-
+    # -|Visualization & Saving|-
     # --- Batch -------- #
     # test_dataset = ms_experiments.test_dataset
     # random_idx = random.randint(0, len(test_dataset) - 1)
     # experiments_dict = predict_batch(experiments=ms_experiments, idx=random_idx)
+    # save_qualitative_results(experiments_dict)
     # visualize_all_experiments(experiments_dict)
-
+    
     # --- Individual --- #
     # experiment = ms_experiments.get_super_resolution()
     # experiment = ms_experiments.get_lr_segmentation()

@@ -49,7 +49,7 @@ class MultiStageTrainer(BaseTrainer):
                 pred_hr_masks_logits, _ = self.model(lr_image)
                 predicted_hr_masks = torch.argmax(pred_hr_masks_logits, dim=1)    # (Batch, H, W)
                 predicted_hr_masks = predicted_hr_masks.float()
-                predicted_masks = self.transform.downsample_mask_cv(predicted_hr_masks)
+                predicted_masks = self.transform.downsample_mask_torch(predicted_hr_masks)
                 predicted_masks = predicted_masks.long()
 
                 self.validation_metrics.update(predicted_masks, lr_masks)
