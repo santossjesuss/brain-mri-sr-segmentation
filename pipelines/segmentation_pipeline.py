@@ -85,26 +85,26 @@ class SegmentationPipeline(BasePipeline):
         return trainer.test(validation_loader)
     
     def predict(self, input_tensor):
-        want_hr = False
-
         model = self._init_unet()
         load_model_for_inference(model, self.saving_path)
         model.to(self.device).eval()
 
         hr_image, hr_mask, lr_image, lr_mask = input_tensor
 
-        if want_hr:
+        if self.data_resolution == Resolution.HR:
             input_image = hr_image
+            target_mask = hr_mask
         else:
             input_image = lr_image
+            target_mask = lr_mask
 
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask = model(input_image)
             predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
-            dice = self._compute_dice(predicted_mask, lr_mask)
+            dice = self._compute_dice(predicted_mask, target_mask)
 
-            if want_hr:
+            if self.data_resolution == Resolution.HR:
                 return {
                     'input_image': hr_image,
                     'target_mask': hr_mask,
@@ -120,8 +120,6 @@ class SegmentationPipeline(BasePipeline):
                 }
 
     def predict_random(self, dataset):
-        want_hr = False
-        
         model = self._init_unet()
         load_model_for_inference(model, self.saving_path)
         model.to(self.device).eval()
@@ -129,7 +127,7 @@ class SegmentationPipeline(BasePipeline):
         idx = random.randint(0, len(dataset) - 1)
         hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
 
-        if want_hr:
+        if self.data_resolution == Resolution.HR:
             input_image = hr_image
         else:
             input_image = lr_image
@@ -140,7 +138,7 @@ class SegmentationPipeline(BasePipeline):
             predicted_mask = torch.argmax(output_mask, dim=1).squeeze(0).cpu()
             dice = self._compute_dice(predicted_mask, lr_mask)
 
-            if want_hr:
+            if self.data_resolution == Resolution.HR:
                 return {
                     'input_image': hr_image,
                     'target_mask': hr_mask,

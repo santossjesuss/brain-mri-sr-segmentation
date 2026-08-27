@@ -44,10 +44,14 @@ def execute_testing_batch(experiments):
     joint_sr_seg_combined_experiment.test()
 
 def predict_batch(experiments, idx):
+    print(f'Prediction with index {idx} from test dataset')
     experiments_dict = {}
 
     lr_seg_experiment = experiments.get_lr_segmentation()
     experiments_dict['LR Segmentation'] = lr_seg_experiment.predict(idx)
+
+    hr_seg_experiment = experiments.get_hr_segmentation()
+    experiments_dict['HR Segmentation'] = hr_seg_experiment.predict(idx)
 
     frozen_sr_frozen_seg_experiment = experiments.get_frozen_sr_frozen_seg()
     experiments_dict['Frozen SR -> Frozen Seg'] = frozen_sr_frozen_seg_experiment.predict(idx)
@@ -71,6 +75,9 @@ def predict_random_batch(experiments):
 
     lr_seg_experiment = experiments.get_lr_segmentation()
     experiments_dict['LR Segmentation'] = lr_seg_experiment.predict_random()
+
+    hr_seg_experiment = experiments.get_hr_segmentation()
+    experiments_dict['HR Segmentation'] = hr_seg_experiment.predict_random()
 
     frozen_sr_frozen_seg_experiment = experiments.get_frozen_sr_frozen_seg()
     experiments_dict['Frozen SR -> Frozen Seg'] = frozen_sr_frozen_seg_experiment.predict_random()
