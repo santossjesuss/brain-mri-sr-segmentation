@@ -8,6 +8,10 @@ from utils.model_persistence import load_model_for_inference
 from transforms.base_transforms import BaseTransforms
 
 class JointSRSegE2EPipeline(BasePipeline):
+    '''
+    Structure: Trainable SR -> Trainable Seg
+    Loss: Segmentation Loss
+    '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -77,6 +81,7 @@ class JointSRSegE2EPipeline(BasePipeline):
         return trainer.test(test_loader)
     
     def predict(self, input_tensor):
+        transforms = BaseTransforms(self.config.scale_factor)
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
 
@@ -89,9 +94,7 @@ class JointSRSegE2EPipeline(BasePipeline):
         load_model_for_inference(model=joint_sr_seg_e2e_model, saving_name=self.saving_path)
         joint_sr_seg_e2e_model.to(self.device).eval()
 
-        hr_image, hr_mask, lr_image, lr_mask = input_tensor
-        transforms = BaseTransforms(self.config.scale_factor)
-
+        _, _, lr_image, lr_mask = input_tensor
         input_image = lr_image
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
@@ -109,6 +112,7 @@ class JointSRSegE2EPipeline(BasePipeline):
             }
 
     def predict_random(self, dataset):
+        transforms = BaseTransforms(self.config.scale_factor)
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
 
@@ -122,8 +126,7 @@ class JointSRSegE2EPipeline(BasePipeline):
         joint_sr_seg_e2e_model.to(self.device).eval()
 
         idx = random.randint(0, len(dataset) - 1)
-        hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
-        transforms = BaseTransforms(self.config.scale_factor)
+        _, _, lr_image, lr_mask = dataset[idx]
 
         input_image = lr_image
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)

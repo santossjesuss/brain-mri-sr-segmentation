@@ -8,6 +8,10 @@ from utils.model_persistence import load_model_for_inference
 from transforms.base_transforms import BaseTransforms
 
 class JointSRSegCombinedPipeline(BasePipeline):
+    '''
+    Structure: Trainable SR -> Trainable Seg
+    Loss: (SR Loss * alpha) + (Segmentation Loss * beta) -- Normally alpha & beta are 0.5
+    '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -93,7 +97,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         load_model_for_inference(model=joint_sr_seg_combined_model, saving_name=self.saving_path)
         joint_sr_seg_combined_model.to(self.device).eval()
 
-        hr_image, hr_mask, lr_image, lr_mask = input_tensor
+        _, _, lr_image, lr_mask = input_tensor
         transforms = BaseTransforms(self.config.scale_factor)
         
         input_image = lr_image
@@ -126,7 +130,7 @@ class JointSRSegCombinedPipeline(BasePipeline):
         joint_sr_seg_combined_model.to(self.device).eval()
 
         idx = random.randint(0, len(dataset) - 1)
-        hr_image, hr_mask, lr_image, lr_mask = dataset[idx]
+        _, _, lr_image, lr_mask = dataset[idx]
         transforms = BaseTransforms(self.config.scale_factor)
 
         input_image = lr_image

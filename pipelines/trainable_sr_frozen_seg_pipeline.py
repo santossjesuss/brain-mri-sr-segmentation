@@ -9,6 +9,9 @@ from utils.model_persistence import load_model_for_inference
 from transforms.base_transforms import BaseTransforms
 
 class TrainableSRFrozenSegPipeline(BasePipeline):
+    '''
+    Loss: Segmentation Loss
+    '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
