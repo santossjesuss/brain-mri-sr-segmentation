@@ -15,8 +15,8 @@ def main():
     train_to_excel(training_results)
 
     # -|Complete experiments testing|-
-    # dataset_experiments = default_dataset_experiments()
-    # test_to_excel(dataset_experiments)
+    dataset_experiments = default_dataset_experiments()
+    test_to_excel(dataset_experiments)
 
     # ------------------------------------------------------
 
@@ -37,6 +37,7 @@ def main():
     # experiment = ms_experiments.get_trainable_sr_frozen_seg()
     # experiment = ms_experiments.get_joint_sr_seg_e2e()
     # experiment = ms_experiments.get_joint_sr_seg_combined()
+    # experiment = ms_experiments.get_sequential_joint()
     
     # results = experiment.predict_random()
     # visualize_superres_model(results)     # Super-Resolution
@@ -54,6 +55,7 @@ def main():
     # experiment = experiments.get_trainable_sr_frozen_seg()
     # experiment = experiments.get_joint_sr_seg_e2e()
     # experiment = experiments.get_joint_sr_seg_combined()
+    # experiment = experiments.get_sequential_joint()
 
     # experiment.run()
     # experiment.test()

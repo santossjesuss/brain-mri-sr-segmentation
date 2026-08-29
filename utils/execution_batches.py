@@ -22,11 +22,17 @@ def execute_training_batch(experiments):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     training_results['Joint Combined'] = joint_sr_seg_combined_experiment.run()
 
+    sequential_joint_experiment = experiments.get_sequential_joint()
+    training_results['Sequential Joint'] = sequential_joint_experiment.run()
+
     return training_results
 
 def execute_testing_batch(experiments):
     lr_seg_experiment = experiments.get_lr_segmentation()
     lr_seg_experiment.test()
+
+    hr_seg_experiment = experiments.get_hr_segmentation()
+    hr_seg_experiment.test()
 
     frozen_sr_frozen_seg_experiment = experiments.get_frozen_sr_frozen_seg()
     frozen_sr_frozen_seg_experiment.test()
@@ -42,6 +48,9 @@ def execute_testing_batch(experiments):
 
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     joint_sr_seg_combined_experiment.test()
+
+    sequential_joint_experiment = experiments.get_sequential_joint()
+    sequential_joint_experiment.test()
 
 def predict_batch(experiments, idx):
     print(f'Prediction with index {idx} from test dataset')
@@ -68,6 +77,9 @@ def predict_batch(experiments, idx):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     experiments_dict['Joint Combined'] = joint_sr_seg_combined_experiment.predict(idx)
 
+    sequential_joint_experiment = experiments.get_sequential_joint()
+    experiments_dict['Sequential Joint'] = sequential_joint_experiment.predict(idx)
+
     return experiments_dict
 
 def predict_random_batch(experiments):
@@ -93,5 +105,8 @@ def predict_random_batch(experiments):
 
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     experiments_dict['Joint Combined'] = joint_sr_seg_combined_experiment.predict_random()
+
+    sequential_joint_experiment = experiments.get_sequential_joint()
+    experiments_dict['Sequential Joint'] = sequential_joint_experiment.predict_random()
 
     return experiments_dict
