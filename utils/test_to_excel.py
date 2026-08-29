@@ -30,5 +30,6 @@ def default_model_experiments(dataset_experiments):
         'Frozen SR -> Trainable Seg': dataset_experiments.get_frozen_sr_trainable_seg(),
         'Trainable SR -> Frozen Seg': dataset_experiments.get_trainable_sr_frozen_seg(),
         'Joint E2E': dataset_experiments.get_joint_sr_seg_e2e(),
-        'Joint Combined': dataset_experiments.get_joint_sr_seg_combined()
+        'Joint Combined': dataset_experiments.get_joint_sr_seg_combined(),
+        'Sequential Joint': dataset_experiments.get_sequential_joint()
     }
