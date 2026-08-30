@@ -22,8 +22,11 @@ def execute_training_batch(experiments):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     training_results['Joint Combined'] = joint_sr_seg_combined_experiment.run()
 
-    sequential_joint_experiment = experiments.get_sequential_joint()
-    training_results['Sequential Joint'] = sequential_joint_experiment.run()
+    sequential_joint_sr_first_experiment = experiments.get_sequential_joint_sr_first()
+    training_results['Sequential Joint (SR First)'] = sequential_joint_sr_first_experiment.run()
+
+    sequential_joint_seg_first_experiment = experiments.get_sequential_joint_seg_first()
+    training_results['Sequential Joint (Seg First)'] = sequential_joint_seg_first_experiment.run()
 
     return training_results
 
@@ -49,8 +52,11 @@ def execute_testing_batch(experiments):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     joint_sr_seg_combined_experiment.test()
 
-    sequential_joint_experiment = experiments.get_sequential_joint()
-    sequential_joint_experiment.test()
+    sequential_joint_sr_first_experiment = experiments.get_sequential_joint_sr_first()
+    sequential_joint_sr_first_experiment.test()
+
+    sequential_joint_seg_first_experiment = experiments.get_sequential_joint_seg_first()
+    sequential_joint_seg_first_experiment.test()
 
 def predict_batch(experiments, idx):
     print(f'Prediction with index {idx} from test dataset')
@@ -77,8 +83,11 @@ def predict_batch(experiments, idx):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     experiments_dict['Joint Combined'] = joint_sr_seg_combined_experiment.predict(idx)
 
-    sequential_joint_experiment = experiments.get_sequential_joint()
-    experiments_dict['Sequential Joint'] = sequential_joint_experiment.predict(idx)
+    sequential_joint_sr_first_experiment = experiments.get_sequential_joint_sr_first()
+    experiments_dict['Sequential Joint (SR First)'] = sequential_joint_sr_first_experiment.predict(idx)
+
+    sequential_joint_seg_first_experiment = experiments.get_sequential_joint_seg_first()
+    experiments_dict['Sequential Joint (Seg First)'] = sequential_joint_seg_first_experiment.predict(idx)
 
     return experiments_dict
 
@@ -106,7 +115,10 @@ def predict_random_batch(experiments):
     joint_sr_seg_combined_experiment = experiments.get_joint_sr_seg_combined()
     experiments_dict['Joint Combined'] = joint_sr_seg_combined_experiment.predict_random()
 
-    sequential_joint_experiment = experiments.get_sequential_joint()
-    experiments_dict['Sequential Joint'] = sequential_joint_experiment.predict_random()
+    sequential_joint_sr_first_experiment = experiments.get_sequential_joint_sr_first()
+    experiments_dict['Sequential Joint (SR First)'] = sequential_joint_sr_first_experiment.predict_random()
+
+    sequential_joint_seg_first_experiment = experiments.get_sequential_joint_seg_first()
+    experiments_dict['Sequential Joint (Seg First)'] = sequential_joint_seg_first_experiment.predict_random()
 
     return experiments_dict

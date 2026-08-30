@@ -64,7 +64,8 @@ class BaseConfig:
     trainable_sr_frozen_seg: str = 'trainable_sr_frozen_seg'
     joint_sr_seg_e2e: str = 'joint_sr_seg_e2e'
     joint_sr_seg_combined: str = 'joint_sr_seg_combined'
-    sequential_joint: str = 'sequential_joint'
+    sequential_joint_sr_first: str = 'sequential_joint_sr_first'
+    sequential_joint_seg_first: str = 'sequential_joint_seg_first'
 
     # Logging config
     base_img_log_dir: str = 'logs/images'

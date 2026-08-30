@@ -37,7 +37,8 @@ def main():
     # experiment = ms_experiments.get_trainable_sr_frozen_seg()
     # experiment = ms_experiments.get_joint_sr_seg_e2e()
     # experiment = ms_experiments.get_joint_sr_seg_combined()
-    # experiment = ms_experiments.get_sequential_joint()
+    # experiment = ms_experiments.get_sequential_joint_sr_first()
+    # experiment = ms_experiments.get_sequential_joint_seg_first()
     
     # results = experiment.predict_random()
     # visualize_superres_model(results)     # Super-Resolution
@@ -55,7 +56,8 @@ def main():
     # experiment = experiments.get_trainable_sr_frozen_seg()
     # experiment = experiments.get_joint_sr_seg_e2e()
     # experiment = experiments.get_joint_sr_seg_combined()
-    # experiment = experiments.get_sequential_joint()
+    # experiment = experiments.get_sequential_joint_sr_first()
+    # experiment = experiments.get_sequential_joint_seg_first()
 
     # experiment.run()
     # experiment.test()

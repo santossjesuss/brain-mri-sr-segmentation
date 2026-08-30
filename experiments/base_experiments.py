@@ -9,7 +9,8 @@ from pipelines.frozen_sr_trainable_seg_pipeline import FrozenSRTrainableSegPipel
 from pipelines.trainable_sr_frozen_seg_pipeline import TrainableSRFrozenSegPipeline
 from pipelines.joint_sr_seg_e2e_pipeline import JointSRSegE2EPipeline
 from pipelines.joint_sr_seg_combined_pipeline import JointSRSegCombinedPipeline
-from pipelines.sequential_joint_pipeline import SequentialJointPipeline
+from pipelines.sequential_joint_sr_first_pipeline import SequentialJointSRFirstPipeline
+from pipelines.sequential_joint_seg_first_pipeline import SequentialJointSegFirstPipeline
 
 class BaseExperiments(ABC):
     def __init__(self, config, dataset):
@@ -148,8 +149,14 @@ class BaseExperiments(ABC):
             pipeline=JointSRSegCombinedPipeline
         )
 
-    def get_sequential_joint(self):
+    def get_sequential_joint_sr_first(self):
         return self._create_experiment(
-            name=self.config.sequential_joint,
-            pipeline=SequentialJointPipeline
+            name=self.config.sequential_joint_sr_first,
+            pipeline=SequentialJointSRFirstPipeline
+        )
+
+    def get_sequential_joint_seg_first(self):
+        return self._create_experiment(
+            name=self.config.sequential_joint_seg_first,
+            pipeline=SequentialJointSegFirstPipeline
         )
