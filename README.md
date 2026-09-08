@@ -1,7 +1,7 @@
 # Enhancement of Brain Segmentation in MRI Scans
 > **Improving segmentation performance using Super-Resolution & Segmentation pipelines for Multiple Sclerosis patients in brain MRI scans**
 
-[![Python](https://img.shields.io/badge/Python-3.11.9-3776AB?logo=python)](https://www.python.org/downloads/release/python-3119/)
+[![Python](https://img.shields.io/badge/Python-3.11.9-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3119/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.9.1-EE4C2C?logo=pytorch)](https://github.com/pytorch/pytorch/tree/v2.9.1)
 
 ---
@@ -18,23 +18,18 @@
 ## 📖 Abstract
 Automated brain segmentation in MRI poses significant challenges, such as inter-patient morphological variability, the presence of imaging artifacts, and low contrast with adjacent tissues. 
 
-In this work, a set of pipelines combining deep neural networks for SR reconstruction and segmentation is presented, comparing them against a baseline segmentation neural network. The results of this baseline are established as a foundation to seek improvements through the pipeline processing of the proposed models. We integrate, within the pipelines, an RCAN-type SR model for reconstruction, a 2D U-Net for segmentation, and the same U-Net model for the baseline segmentation. 
+In this work, a set of pipelines combining deep neural networks for SR reconstruction and segmentation is presented, comparing them against a baseline segmentation neural network. The results of this baseline are established as a foundation to seek improvements through the pipeline processing of the proposed models. We integrate, within the pipelines, an `RCAN`-type SR model for reconstruction, a `2D U-Net` for segmentation, and the same U-Net model for the baseline segmentation. 
 
-The loss function employed in the segmentation is an average of Dice and CE, in the SR it is $L_1$, and in the pipelines, segmentation losses and singularly a multi-objective loss are chosen, the latter being an average of the SR and segmentation losses. 
+The loss function employed in the segmentation is an average of `Dice` and `CE`, in the SR it is $\mathcal{L}_1$, and in the pipelines, segmentation losses and singularly a multi-objective loss are chosen, the latter being an average of the SR and segmentation losses. 
 
-We evaluate on brain planes using Dice, IoU, Precision, and Recall metrics. The system manages to improve the brain segmentation results in Multiple Sclerosis patients in MRI images.
+We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metrics. The system manages to improve the brain segmentation results in Multiple Sclerosis patients in MRI images.
 
 
 ## 📊 Key Findings & Results
 
-> **Core Takeaway:** 
+<!-- > **Core Takeaway:**  -->
 
-<details open>
-<summary>
-    <b>1. Training performance metrics</b>
-</summary>
-<br>
-
+### 1. Training Performance Metrics
 | Exp | Pipeline | Dice | IoU | Precision | Recall |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **1** | LR Seg (Baseline) | 0.7796 | 0.6389 | 0.8412 | 0.7264 |
@@ -46,14 +41,7 @@ We evaluate on brain planes using Dice, IoU, Precision, and Recall metrics. The 
 | **7** | Sequential Joint (SR First) | 0.7964 | 0.6617 | 0.8291 | **0.7662** |
 | **8** | Sequential Joint (Seg First) | **0.8030** | **0.6709** | 0.8613 | 0.7521 |
 
-</details>
-
-<details open>
-<summary>
-    <b>2. Testing performance metrics (On Unseen Data)</b>
-</summary>
-<br>
-
+### 2. Testing Performance Metrics (Unseen Data)
 | Exp | Pipeline | Dice | IoU | Precision | Recall |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **1** | LR Seg (Baseline) | 0.6947 | 0.5323 | 0.7210 | 0.6704 |
@@ -66,14 +54,7 @@ We evaluate on brain planes using Dice, IoU, Precision, and Recall metrics. The 
 | **7** | Sequential Joint (SR First) | **0.7114** | **0.5521** | 0.7144 | **0.7085** |
 | **8** | Sequential Joint (Seg First) | 0.7087 | 0.5488 | 0.7202 | 0.6976 |
 
-</details>
-
-<details open>
-<summary>
-    <b>3. Relative Performance Gains (%) vs. Baseline</b>
-</summary>
-<br>
-
+### 3. Relative Performance Gains (%) vs. Baseline
 | Exp | Pipeline | $\Delta$ Dice (%) | $\Delta$ IoU (%) | $\Delta$ Precision (%) | $\Delta$ Recall (%) |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **1** | LR Seg (Baseline) | 0.00 | 0.00 | 0.00 | 0.00 |
@@ -85,8 +66,6 @@ We evaluate on brain planes using Dice, IoU, Precision, and Recall metrics. The 
 | **6** | Joint Combined (Joint Loss) | +1.15 | +1.35 | **+3.23** | -0.58 |
 | **7** | Sequential Joint (SR First) | **+1.67** | **+1.98** | -0.66 | **+3.81** |
 | **8** | Sequential Joint (Seg First) | +1.40 | +1.65 | -0.08 | +2.72 |
-
-</details>
 
 
 ## 📖 Documentation & Deep Dives
