@@ -1,79 +1,99 @@
-# Deep Learning Pipeline for Brain MRI: Super-Resolution & Segmentation
+# Enhancement of Brain Segmentation in MRI Scans
+> **Improving segmentation performance using Super-Resolution & Segmentation pipelines for Multiple Sclerosis patients in brain MRI scans**
 
-![Python](https://img.shields.io/badge/python-3.11.9-blue)
-![PyTorch](https://img.shields.io/badge/pytorch-2.x-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![Python](https://img.shields.io/badge/Python-3.11.9-3776AB?logo=python)](https://www.python.org/downloads/release/python-3119/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.9.1-EE4C2C?logo=pytorch)](https://github.com/pytorch/pytorch/tree/v2.9.1)
 
-A systematic benchmark of six Super-Resolution integration strategies
-for brain MRI segmentation, applied to Multiple Sclerosis and Parkinson's datasets.
+---
+### 📌 Overview
 
-*Developed by [Jesús Santos Barba](https://www.linkedin.com/in/jesús-santos-215706315) as part of my Final Degree Project at the University of Malaga.*
+* **Author:** [Jesús Santos Barba](https://www.linkedin.com/in/jesús-santos-215706315)
+* **Context:** Final Degree Project (TFG) at the [University of Málaga (UMA)](https://www.uma.es)
+* **Domain:** Deep Learning · Medical Image Processing · Brain MRI Segmentation
 
-## Overview
-The task of segmenting brain lesions in MRI scans is typically constrained by scanner resolution; blurry images make lesion boundaries harder to delineate accurately.  
+<!-- A deep learning project focused on improving Multiple Sclerosis (MS) lesion segmentation performance on brain MRI scans through the use of multi-model pipelines. 
 
-This project benchmarks six pipeline configurations that combine Super-Resolution and Segmentation in different ways, from fully frozen pretrained networks to jointly trained end-to-end architectures. The goal is to determine which integration strategy yields the best segmentation quality on low-resolution inputs, using Multiple Sclerosis and Parkinson's disease datasets. 
+*Developed by [Jesús Santos Barba](https://www.linkedin.com/in/jesús-santos-215706315) as part of my TFG (Final Degree Project) at the University of Malaga.* -->
 
-Architectures used: **RCAN** (Super-Resolution, custom implementation) and **UNet** (Segmentation, via `segmentation-models-pytorch`)
+## 📖 Abstract
+Automated brain segmentation in MRI poses significant challenges, such as inter-patient morphological variability, the presence of imaging artifacts, and low contrast with adjacent tissues. 
 
-## Pipeline configurations
-| # | Configuration | SR weights | Seg weights | Loss |
-|---|--------------|-----------|------------|------|
-| 1 | Seg only (baseline) | — | trainable | Seg |
-| 2 | SR → Seg (both frozen) | pretrained, frozen | pretrained, frozen | — |
-| 3 | SR → Seg (seg trainable) | pretrained, frozen | trainable | Seg |
-| 4 | SR → Seg (SR trainable) | trainable | pretrained, frozen | Seg |
-| 5 | SR → Seg end-to-end | trainable | trainable | Seg only |
-| 6 | SR → Seg joint loss | trainable | trainable | SR + Seg |
+In this work, a set of pipelines combining deep neural networks for SR reconstruction and segmentation is presented, comparing them against a baseline segmentation neural network. The results of this baseline are established as a foundation to seek improvements through the pipeline processing of the proposed models. We integrate, within the pipelines, an RCAN-type SR model for reconstruction, a 2D U-Net for segmentation, and the same U-Net model for the baseline segmentation. 
 
-An image that represents the pipeline structure is shown below (Note that this image is a general representation that does not represents the combinations):
+The loss function employed in the segmentation is an average of Dice and CE, in the SR it is $L_1$, and in the pipelines, segmentation losses and singularly a multi-objective loss are chosen, the latter being an average of the SR and segmentation losses. 
 
-![General Pipeline](.repo/general-pipeline.png)
-*General pipeline structure*
-
-Below is an input image that would be fed to the model (i.e. low-resolution image):
-
-![Low-Resolution Image](.repo/...)
-
-And below are the ground truth output segmentation mask and predicted mask:
-
-![Segmentation-Mask (Ground Truth)](.repo/...)
-![Segmentation-Mask (Predicted)](.repo/...)
-
-## Results
-We can see the results obtained by the experiments in the table shown below:
-
-[table]
+We evaluate on brain planes using Dice, IoU, Precision, and Recall metrics. The system manages to improve the brain segmentation results in Multiple Sclerosis patients in MRI images.
 
 
-## Experiment design
-### Phase 1 — Baseline
-This is the basic experiment. From this phase we assess whether introducing a Super-Resolution → Segmentation pipeline improves performance over a standalone segmentation model. The following image serves as a visual example of the experiment workflow.
+## 📊 Key Findings & Results
 
-![Experiment Workflow](.repo/benchmark-templates.png)
+> **Core Takeaway:** 
 
-The dataset is downsampled using a deterministic method (bicubic interpolation) applied to both images and masks, resulting in tuples of the form: (LR image, LR mask, HR image, HR mask). 
+<details open>
+<summary>
+    <b>1. Training performance metrics</b>
+</summary>
+<br>
 
-This phase is composed of the following components:
+| Exp | Pipeline | Dice | IoU | Precision | Recall |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| **1** | LR Seg (Baseline) | 0.7796 | 0.6389 | 0.8412 | 0.7264 |
+| **--** | HR Seg | 0.8027 | 0.6705 | 0.8623 | 0.7509 |
+| **3** | Frozen SR $\rightarrow$ Trainable Seg | 0.7922 | 0.6559 | 0.8689 | 0.7279 |
+| **4** | Trainable SR $\rightarrow$ Frozen Seg | 0.8004 | 0.6673 | 0.8610 | 0.7479 |
+| **5** | Joint E2E | 0.7874 | 0.6494 | 0.8533 | 0.7310 |
+| **6** | Joint Combined (Joint Loss) | 0.8019 | 0.6694 | **0.8798** | 0.7367 |
+| **7** | Sequential Joint (SR First) | 0.7964 | 0.6617 | 0.8291 | **0.7662** |
+| **8** | Sequential Joint (Seg First) | **0.8030** | **0.6709** | 0.8613 | 0.7521 |
 
-- *Segmentation only*: A segmentation model is trained directly on the low-resolution dataset, producing low-resolution segmentation masks.
+</details>
 
-- *SR → Seg (both frozen)*: A two-stage pipeline is constructed using pretrained SR and Segmentation networks, both kept frozen. The SR model upsamples the low-resolution input; from this, the Segmentation model produces a high-resolution mask. Predicted masks are downsampled via bicubic interpolation for comparison with the first baseline.
+<details open>
+<summary>
+    <b>2. Testing performance metrics (On Unseen Data)</b>
+</summary>
+<br>
 
-The core idea is to compare the performance of the single segmentation model over the LR space with the performance of the pipeline, which is downsampled to the same resolution as the first model to make a proportional comparison.
+| Exp | Pipeline | Dice | IoU | Precision | Recall |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| **1** | LR Seg (Baseline) | 0.6947 | 0.5323 | 0.7210 | 0.6704 |
+| **--** | HR Seg | 0.7104 | 0.5508 | 0.7303 | 0.6914 |
+| **2** | Frozen SR $\rightarrow$ Frozen Seg | 0.7077 | 0.5476 | 0.7165 | 0.6991 |
+| **3** | Frozen SR $\rightarrow$ Trainable Seg | 0.7050 | 0.5444 | 0.7187 | 0.6917 |
+| **4** | Trainable SR $\rightarrow$ Frozen Seg | 0.7109 | 0.5514 | 0.7308 | 0.6920 |
+| **5** | Joint E2E | 0.7011 | 0.5398 | 0.7275 | 0.6767 |
+| **6** | Joint Combined (Joint Loss) | 0.7062 | 0.5458 | **0.7533** | 0.6646 |
+| **7** | Sequential Joint (SR First) | **0.7114** | **0.5521** | 0.7144 | **0.7085** |
+| **8** | Sequential Joint (Seg First) | 0.7087 | 0.5488 | 0.7202 | 0.6976 |
 
-### Phase 2 — Fine-tuning strategies
-This phase explores different training configurations to improve upon the baseline results.
+</details>
 
-- *Frozen SR → trainable Seg*: The SR network is pretrained and kept frozen, while the segmentation network is trained on the SR outputs.
-- *Trainable SR → frozen Seg*: The SR network is trained while the pretrained segmentation model remains frozen.
-- *End-to-end*: Both SR and segmentation networks are trained jointly as a single model. Optimization is driven solely by the segmentation loss.
-- *Joint loss*: Both networks are trained jointly using a composite loss. An SR reconstruction loss on the high-resolution output and a segmentation loss on the predicted mask, combined as a mean of the two losses.
+<details open>
+<summary>
+    <b>3. Relative Performance Gains (%) vs. Baseline</b>
+</summary>
+<br>
 
-The same dynamics as the first phase applies here. In this part, we explore different approaches for designing the pipeline, and we compare the performance of these variants against the single segmentation model over the same LR space.
+| Exp | Pipeline | $\Delta$ Dice (%) | $\Delta$ IoU (%) | $\Delta$ Precision (%) | $\Delta$ Recall (%) |
+| :---: | :--- | :---: | :---: | :---: | :---: |
+| **1** | LR Seg (Baseline) | 0.00 | 0.00 | 0.00 | 0.00 |
+| **--** | HR Seg | +1.57 | +1.85 | +0.93 | +2.10 |
+| **2** | Frozen SR $\rightarrow$ Frozen Seg | +1.30 | +1.53 | -0.45 | +2.87 |
+| **3** | Frozen SR $\rightarrow$ Trainable Seg | +1.03 | +1.21 | -0.23 | +2.13 |
+| **4** | Trainable SR $\rightarrow$ Frozen Seg | +1.62 | +1.91 | +0.98 | +2.16 |
+| **5** | Joint E2E | +0.64 | +0.75 | +0.65 | +0.63 |
+| **6** | Joint Combined (Joint Loss) | +1.15 | +1.35 | **+3.23** | -0.58 |
+| **7** | Sequential Joint (SR First) | **+1.67** | **+1.98** | -0.66 | **+3.81** |
+| **8** | Sequential Joint (Seg First) | +1.40 | +1.65 | -0.08 | +2.72 |
 
-## Setup
+</details>
 
 
-## Acknowledgements 
-This project is a Final Degree Project (TFG) for the [University of Malaga (UMA)](https://www.uma.es), supervised by the professors Rafael Marcos Luque Baena and Karl Thurnhofer Hemsi.
+## 📖 Documentation & Deep Dives
+
+- [🏗️ Pipeline Architectures & Experiments](docs/pipelines.md): Detailed breakdown of all 8 training configurations and joint loss functions.
+<!-- - [⚙️ Setup & Training Guide](docs/setup.md): Instructions for data preprocessing, environment setup, and running experiments. -->
+
+
+## 🏛️ Academic Context
+This project was developed as a Final Degree Project (TFG) completed at the [University of Malaga (UMA)](https://www.uma.es).
