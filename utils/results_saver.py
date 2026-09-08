@@ -4,9 +4,12 @@ from torchvision.utils import save_image
 def save_qualitative_results(experiments_dict, output_dir='qualitative_results'):
     os.makedirs(output_dir, exist_ok=True)
 
-    lr_pipeline = experiments_dict['LR Segmentation']
+    lr_pipeline = experiments_dict['LR_Segmentation']
+    hr_pipeline = experiments_dict['HR_Segmentation']
+
     input_image = lr_pipeline['input_image'].float()
-    target_mask = lr_pipeline['target_mask'].float()
+    target_mask = hr_pipeline['target_mask'].float()
+
     save_image(input_image, os.path.join(output_dir, 'input_image.png'))
     save_image(target_mask, os.path.join(output_dir, 'ground_truth.png'))
     
