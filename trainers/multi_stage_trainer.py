@@ -44,15 +44,12 @@ class MultiStageTrainer(BaseTrainer):
 
         with torch.no_grad():
             for batch in tqdm(dataloader, desc=description):
-                lr_image, lr_masks, _, _ = self._prepare_batch(batch)
+                lr_image, _, _, hr_masks = self._prepare_batch(batch)
 
                 pred_hr_masks_logits, _ = self.model(lr_image)
                 predicted_hr_masks = torch.argmax(pred_hr_masks_logits, dim=1)    # (Batch, H, W)
-                predicted_hr_masks = predicted_hr_masks.float()
-                predicted_masks = self.transform.downsample_mask_torch(predicted_hr_masks)
-                predicted_masks = predicted_masks.long()
 
-                self.validation_metrics.update(predicted_masks, lr_masks)
+                self.validation_metrics.update(predicted_hr_masks, hr_masks)
 
         return self.validation_metrics.compute()
     

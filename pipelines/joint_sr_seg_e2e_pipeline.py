@@ -5,7 +5,6 @@ from models.multi_stage_model import MultiStageModel
 from trainers.multi_stage_trainer import MultiStageTrainer
 from enums.hyperparameter_enum import HyperparameterVersion
 from utils.model_persistence import load_model_for_inference
-from transforms.base_transforms import BaseTransforms
 
 class JointSRSegE2EPipeline(BasePipeline):
     '''
@@ -81,7 +80,6 @@ class JointSRSegE2EPipeline(BasePipeline):
         return trainer.test(test_loader)
     
     def predict(self, input_tensor):
-        transforms = BaseTransforms(self.config.scale_factor)
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
 
@@ -94,25 +92,23 @@ class JointSRSegE2EPipeline(BasePipeline):
         load_model_for_inference(model=joint_sr_seg_e2e_model, saving_name=self.saving_path)
         joint_sr_seg_e2e_model.to(self.device).eval()
 
-        _, _, lr_image, lr_mask = input_tensor
+        _, hr_mask, lr_image, _ = input_tensor
         input_image = lr_image
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask, _ = joint_sr_seg_e2e_model(input_image)
-            output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask_torch(output_mask)
-            predicted_mask = output_mask.long().squeeze(0).cpu()
-            dice = self._compute_dice(predicted_mask, lr_mask)
+            output_mask = torch.argmax(output_mask, dim=1)
+            predicted_mask = output_mask.squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, hr_mask)
 
             return {
                 'input_image': lr_image,
-                'target_mask': lr_mask,
+                'target_mask': hr_mask,
                 'predicted_mask': predicted_mask,
                 'dice': dice
             }
 
     def predict_random(self, dataset):
-        transforms = BaseTransforms(self.config.scale_factor)
         sr_model = self._init_rcan()
         seg_model = self._init_unet()
 
@@ -126,20 +122,19 @@ class JointSRSegE2EPipeline(BasePipeline):
         joint_sr_seg_e2e_model.to(self.device).eval()
 
         idx = random.randint(0, len(dataset) - 1)
-        _, _, lr_image, lr_mask = dataset[idx]
+        _, hr_mask, lr_image, _ = dataset[idx]
 
         input_image = lr_image
         input_image = input_image.unsqueeze(0).to(self.device, dtype=torch.float32)
         with torch.no_grad():
             output_mask, _ = joint_sr_seg_e2e_model(input_image)
-            output_mask = torch.argmax(output_mask, dim=1).float()
-            output_mask = transforms.downsample_mask_torch(output_mask)
-            predicted_mask = output_mask.long().squeeze(0).cpu()
-            dice = self._compute_dice(predicted_mask, lr_mask)
+            output_mask = torch.argmax(output_mask, dim=1)
+            predicted_mask = output_mask.squeeze(0).cpu()
+            dice = self._compute_dice(predicted_mask, hr_mask)
 
             return {
                 'input_image': lr_image,
-                'target_mask': lr_mask,
+                'target_mask': hr_mask,
                 'predicted_mask': predicted_mask,
                 'dice': dice
             }
