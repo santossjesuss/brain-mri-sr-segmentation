@@ -24,6 +24,15 @@ The loss function employed in the segmentation is an average of `Dice` and `CE`,
 
 We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metrics. The system manages to improve the brain segmentation results in Multiple Sclerosis patients in MRI images.
 
+## 📖 Documentation
+
+- [🏗️ **Pipeline Architectures**](docs/pipelines.md) — Detailed breakdown of all 8 training configurations and joint loss functions.
+- [🖼️ **Qualitative Results**](docs/qualitative_results.md) — Comparative visual inspection of predictions across all experimental pipelines
+<!-- - [📁 **Project Structure**](docs/project_structure.md) — High-level technical breakdown of the system architecture, core execution modules, and utility components. -->
+<!-- - Dataset -->
+<!-- - [⚙️ Setup & Training Guide](docs/setup.md): Instructions for data preprocessing, environment setup, and running experiments. -->
+<!-- - [🚀 **Future Work**](docs/future_work.md) — Research directions focused on testing new pipeline variations and multi-model training strategies. -->
+
 
 ## 📊 Key Findings & Results
 
@@ -66,12 +75,6 @@ We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metri
 | **6** | Joint Combined (Joint Loss) | +1.15 | +1.35 | **+3.23** | -0.58 |
 | **7** | Sequential Joint (SR First) | **+1.67** | **+1.98** | -0.66 | **+3.81** |
 | **8** | Sequential Joint (Seg First) | +1.40 | +1.65 | -0.08 | +2.72 |
-
-
-## 📖 Documentation & Deep Dives
-
-- [🏗️ Pipeline Architectures & Experiments](docs/pipelines.md): Detailed breakdown of all 8 training configurations and joint loss functions.
-<!-- - [⚙️ Setup & Training Guide](docs/setup.md): Instructions for data preprocessing, environment setup, and running experiments. -->
 
 
 ## 🏛️ Academic Context
