@@ -2,8 +2,8 @@
 
 The dataset used in this project is not sourced from a single origin. Instead, it combines two independent acquisition sites into a unified dataset for Multiple Sclerosis (MS).
 
-- **Pathological data:** MS lesion cases from the **`MSLesSeg`** dataset [2].
-- **Control data:** Healthy reference subjects from the **`ds004199`** epilepsy dataset [3], excluding all epillepsy/FCD patient scans.
+- **Pathological data:** MS lesion cases from the **`MSLesSeg`** dataset [[1]](#ref-1).
+- **Control data:** Healthy reference subjects from the **`ds004199`** epilepsy dataset [[2]](#ref-2), excluding all epillepsy/FCD patient scans.
 
 Both groups went through an identical preprocessing pipeline to guarantee homogeneity across sources, despite their different origins. 
 Volumes were processed into 2D slices, and each folder was further split into `axial`, `coronal` and `sagital` subfolders. This preprocessed dataset, including the folder structure, slice extraction, and orthogonal-plane organization, was provided by my tutors.
@@ -66,3 +66,11 @@ The dataset class returns a **four-element tensor tuple** per request, applying 
 | `Y_HR` | High-resolution mask | Normalized (binary) |
 | `X_LR` | Low-resolution image | Normalized + **bicubic** downsampling |
 | `Y_LR` | Low-resolution mask | Normalized (binary) + **nearest-neighbour** downsampling |
+
+## 📚 References
+
+<a id="ref-1"></a>
+**[1]** Guarnera, F., Rondinella, A., Crispino, E. *et al.* MSLesSeg: A multi-site MRI dataset for Multiple Sclerosis lesion segmentation. *Sci Data* **12**, 920 (2025). [https://doi.org/10.1038/s41597-025-05250-y](https://doi.org/10.1038/s41597-025-05250-y)
+
+<a id="ref-2"></a>
+**[2]** Schuch, F., Walger, L., Schmitz, M. *et al.* A multi-site structural MRI dataset of epilepsy patients and healthy controls. *Sci Data* **10**, 475 (2023). [https://doi.org/10.1038/s41597-023-02386-7](https://doi.org/10.1038/s41597-023-02386-7) — hosted on OpenNeuro as [`ds004199`](https://openneuro.org/datasets/ds004199/).
