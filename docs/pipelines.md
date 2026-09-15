@@ -1,6 +1,4 @@
-# Pipeline Architectures
-
-This document provides a detailed technical breakdown of the 8 pipeline configurations evaluated in this project.
+# ⚙️ Pipeline Architectures
 
 The experiments use the following architectures: 
 - **Super-Resolution (SR):** Custom implementation of the **RCAN** (Residual Channel Attention Network) architecture.
@@ -12,10 +10,12 @@ The loss functions used for this setup are:
 $$
     \mathcal{L}_{\text{Seg}} = \frac{1}{2} \mathcal{L}_{\text{Dice}} + \frac{1}{2} \mathcal{L}_{\text{CE}}
 $$
+- **Joint Loss ($\mathcal{L}_{\text{Joint}}$):** Average of the super-resolution and segmentation losses.
+$$
+    \mathcal{L}_{\text{Joint}} = \frac{1}{2} \mathcal{L}_{\text{SR}} + \frac{1}{2} \mathcal{L}_{\text{Seg}}
+$$
 
-The original dataset provides tuples of the form `(image, mask)`. The custom `Dataset` class performs a preprocessing step to obtain tuples of the form `(hr_image, hr_mask, lr_image, lr_mask)`. 
-
-This allows the experiments to work on multiple resolutions and ensures a scientifically consistent experimentation. Without the preprocessing step, pipeline outputs would need to be downsampled prior to evaluation to be able to measure the performance or learning.
+See [Dataset](datasets.md) for details on the `Dataset` class and how the `(hr_image, hr_mask, lr_image, lr_mask)` tuples are built. This allows the experiments to work on multiple resolutions and ensures a scientifically consistent experimentation. Without this preprocessing step, pipeline outputs would need to be downsampled prior to evaluation to be able to measure the performance or learning.
 
 ## 📌 Pipelines Overview
 
@@ -34,7 +34,7 @@ This allows the experiments to work on multiple resolutions and ensures a scient
 ## 🔬 Detailed Architecture Breakdown
 
 ### Pipeline 1: Baseline (LR Seg & HR Seg)
-This configuration serves as the experimental baseline. Concretely, **LR Seg** is set as a reference to be improved, while **HR Seg** is the hypothetical the upper bound. 
+This configuration serves as the experimental baseline. Concretely, **LR Seg** is set as a reference to be improved, while **HR Seg** is the hypothetical upper bound. 
 
 Two independent models are trained:
 - Low-Resolution Segmentation (LR Seg)
@@ -42,42 +42,52 @@ Two independent models are trained:
 
 Both models are trained on their respective spatial resolutions using the segmentation loss ($\mathcal{L}_{\text{Seg}}$) previously defined.
 
-![Pipeline 1: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_1_segmentation.png)
+![Pipeline 1: Baseline (LR Seg & HR Seg)](../.repo/pipelines/images/pipeline_1_segmentation.png)
 *Pipeline 1 structure*
+
+---
 
 ### Pipeline 2: Frozen SR --> Frozen Seg
 This pipeline is composed of two independently pre-trained models with their weights strictly frozen: a super-resolution network and a segmentation network.
 
-This pipeline is composed of a super-resolution model and a segmentation model. Both models are independently pre-trained and have their weights frozen. 
-
-![Pipeline 2: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_2_frozen_sr_frozen_seg.png)
+![Pipeline 2: Frozen SR --> Frozen Seg](../.repo/pipelines/images/pipeline_2_frozen_sr_frozen_seg.png)
 *Pipeline 2 structure*
+
+---
 
 ### Pipeline 3: Frozen SR --> Trainable Seg
 This configuration chains a pre-trained, frozen super-resolution model to a fresh untrained segmentation network. The loss function used for this pipeline is the standard segmentation loss ($\mathcal{L}_{\text{Seg}}$).
 
-![Pipeline 3: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_3_frozen_sr_trainable_seg.png)
+![Pipeline 3: Frozen SR --> Trainable Seg](../.repo/pipelines/images/pipeline_3_frozen_sr_trainable_seg.png)
 *Pipeline 3 structure*
+
+---
 
 ### Pipeline 4: Trainable SR --> Frozen Seg
 This configuration connects an untrained super-resolution network with a pre-trained and frozen segmentation model. The loss function used for this pipeline is the standard segmentation loss ($\mathcal{L}_{\text{Seg}}$).
 
-![Pipeline 4: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_4_trainable_sr_frozen_seg.png)
+![Pipeline 4: Trainable SR --> Frozen Seg](../.repo/pipelines/images/pipeline_4_trainable_sr_frozen_seg.png)
 *Pipeline 4 structure*
+
+---
 
 ### Pipeline 5: End-to-End SR-Seg
 This pipeline is composed of two untrained models: a super-resolution network and a segmentation network. Both models are optimized at the same time under the same standard segmentation loss ($\mathcal{L}_{\text{Seg}}$). 
 
-![Pipeline 5: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_5_sr_seg_e2e.png)
+![Pipeline 5: End-to-End SR-Seg](../.repo/pipelines/images/pipeline_5_sr_seg_e2e.png)
 *Pipeline 5 structure*
 
+---
+
 ### Pipeline 6: Joint Combined SR-Seg
-This pipeline is similar to the previous, it chains an untrained super-resolution network to an untrained segmentation network and trains them together, but the loss function used is the average of both super-resolution and segmentation losses ($\mathcal{L}_{\text{Seg}}$). 
+This pipeline is similar to the previous, it chains an untrained super-resolution network to an untrained segmentation network and trains them together, but the loss function used is the average of both super-resolution and segmentation losses ($\mathcal{L}_{\text{Joint}}$). 
 
-The super-resolution loss is computed directly at the output of the super-resolution model (pred_hr_image) while the segmentation loss is computed as usual, with the final predicted mask (pred_mask).
+The super-resolution loss is computed directly at the output of the super-resolution model (`pred_hr_image`) while the segmentation loss is computed as usual, with the final predicted mask (`pred_mask`).
 
-![Pipeline 6: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_6_sr_seg_joint_combined.png)
+![Pipeline 6: Joint Combined SR-Seg](../.repo/pipelines/images/pipeline_6_sr_seg_joint_combined.png)
 *Pipeline 6 structure*
+
+---
 
 ### Pipeline 7: Sequential Joint (SR First)
 This structure consists of a preliminary phase and two more phases, and the goal is to obtain the benefits of each of these approaches: Trainable SR → Frozen Seg and Frozen SR → Trainable Seg.
@@ -92,7 +102,9 @@ The learning process happens using the standard segmentation loss ($\mathcal{L}_
 ![Pipeline 7: Sequential Joint (SR First)](../.repo/pipelines/images/pipeline_7_sequential_joint_sr_first.png)
 *Pipeline 7 structure*
 
-### Pipeline 8: Sequential Joint (SR First)
+---
+
+### Pipeline 8: Sequential Joint (Seg First)
 The same principles and goals from the previous pipelines apply here. However, the strategy is changed. 
 
 The phases of this approach consist in:
