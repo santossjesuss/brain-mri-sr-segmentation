@@ -2,8 +2,6 @@
 
 This document presents a qualitative visual comparison of the segmentation masks generated across all experimental pipeline configurations. These visual results complement the quantitative performance metrics by illustrating how each network architecture handles fine-grained Multiple Sclerosis (MS) lesion boundary delineation and small focal lesion detection.
 
----
-
 ## 📌 Legend & Pipeline Nomenclature
 
 | Subfigure | Pipeline |
