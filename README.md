@@ -26,11 +26,12 @@ We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metri
 
 ## 📖 Documentation
 
-- [⚙️ **Pipeline Architectures**](docs/pipelines.md) — Detailed breakdown of all 8 training configurations and joint loss functions.
-- [🖼️ **Qualitative Results**](docs/qualitative_results.md) — Comparative visual inspection of predictions across all experimental pipelines.
 - [📊 **Datasets**](docs/datasets.md) — Structure, sources, and preprocessing of the MS/control MRI dataset used across all pipelines.
+- [⚙️ **Pipeline Architectures**](docs/pipelines.md) — Detailed breakdown of all 8 training configurations and joint loss functions.
+<!-- - [🎯 **Hyperparameter Tuning**](docs/hyperparameter_tuning.md) — -->
+- [🖼️ **Qualitative Results**](docs/qualitative_results.md) — Comparative visual inspection of predictions across all experimental pipelines.
 <!-- - [📁 **Project Structure**](docs/project_structure.md) — High-level technical breakdown of the system architecture, core execution modules, and utility components. -->
-<!-- - [🚀 **Future Work**](docs/future_work.md) — Research directions focused on testing new pipeline variations and multi-model training strategies. -->
+- [🚀 **Future Work**](docs/future_work.md) — Research directions focused on testing new pipeline variations and multi-model training strategies.
 
 
 ## 📊 Key Findings & Results

@@ -43,7 +43,7 @@ To prevent data leakage, slices are grouped strictly by subject, so no subject a
 - **80%** of the data to training
 - **20%** of the data to validation
 
-![Dataset Structure](../.repo/datasets/dataset-structure.png)
+![Dataset Structure](../.repo/datasets/images/dataset-structure.png)
 *Dataset Structure*
 
 ### Resulting Split
@@ -66,6 +66,13 @@ The dataset class returns a **four-element tensor tuple** per request, applying 
 | `Y_HR` | High-resolution mask | Normalized (binary) |
 | `X_LR` | Low-resolution image | Normalized + **bicubic** downsampling |
 | `Y_LR` | Low-resolution mask | Normalized (binary) + **nearest-neighbour** downsampling |
+
+![Image downsampling](../.repo/datasets/images/bicubic_downsample.png)
+*Image downsampling: Bicubic Interpolation*
+
+![Mask downsampling](../.repo/datasets/images/nearest_neighbour_downsampling.png)
+*Mask downsampling: Nearest Neighbour*
+
 
 ## 📚 References
 
