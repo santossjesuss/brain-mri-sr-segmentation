@@ -67,11 +67,11 @@ The dataset class returns a **four-element tensor tuple** per request, applying 
 | `X_LR` | Low-resolution image | Normalized + **bicubic** downsampling |
 | `Y_LR` | Low-resolution mask | Normalized (binary) + **nearest-neighbour** downsampling |
 
-![Image downsampling](../.repo/datasets/images/bicubic_downsample.png)
+<!-- ![Image downsampling](../.repo/datasets/images/bicubic_downsample.png)
 *Image downsampling: Bicubic Interpolation*
 
 ![Mask downsampling](../.repo/datasets/images/nearest_neighbour_downsampling.png)
-*Mask downsampling: Nearest Neighbour*
+*Mask downsampling: Nearest Neighbour* -->
 
 
 ## 📚 References

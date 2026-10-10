@@ -28,7 +28,7 @@ We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metri
 
 - [📊 **Datasets**](docs/datasets.md) — Structure, sources, and preprocessing of the MS/control MRI dataset used across all pipelines.
 - [⚙️ **Pipeline Architectures**](docs/pipelines.md) — Detailed breakdown of all 8 training configurations and joint loss functions.
-<!-- - [🎯 **Hyperparameter Tuning**](docs/hyperparameter_tuning.md) — -->
+- [🎯 **Hyperparameter Tuning**](docs/hyperparameter_tuning.md) — Grid search to optimize the LR and HR segmentation baselines.
 - [🖼️ **Qualitative Results**](docs/qualitative_results.md) — Comparative visual inspection of predictions across all experimental pipelines.
 <!-- - [📁 **Project Structure**](docs/project_structure.md) — High-level technical breakdown of the system architecture, core execution modules, and utility components. -->
 - [🚀 **Future Work**](docs/future_work.md) — Research directions focused on testing new pipeline variations and multi-model training strategies.
@@ -78,4 +78,4 @@ We evaluate on brain planes using `Dice`, `IoU`, `Precision`, and `Recall` metri
 
 
 ## 🏛️ Academic Context
-This project was developed as a Final Degree Project (TFG) completed at the [University of Malaga (UMA)](https://www.uma.es).
+This project was developed as a Final Degree Project (TFG) completed at the [University of Malaga (UMA)](https://www.uma.es), under the supervision of *Dr. Rafael Marcos Luque Baena* and *Dr. Kark Khader Thurnhofer Hemsi*, whose guidance helped shape the project.
